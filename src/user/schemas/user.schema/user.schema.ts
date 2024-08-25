@@ -42,3 +42,4 @@ export class Component extends Document{
     };
 
 }
+export const ComponentSchema =SchemaFactory.createForClass(Component);
