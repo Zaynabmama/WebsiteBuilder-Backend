@@ -7,7 +7,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   console.log('Nest application is starting...');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe());
   await app.listen(process.env.PORT , () => {
     console.log(`Application is running on: http://localhost:${process.env.PORT }`);
   });
