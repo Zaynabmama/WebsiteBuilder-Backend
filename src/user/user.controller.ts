@@ -23,6 +23,10 @@ update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   findAll() {
   return this.userService.findAllUsers();
   }
+  @Delete(':id')
+  delete(@Param('id') id: string) {
+    return this.userService.deleteUser(id);
+  }
 
  
   
