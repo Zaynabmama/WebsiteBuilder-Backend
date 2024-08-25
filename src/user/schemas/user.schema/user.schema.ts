@@ -72,3 +72,4 @@ class User extends Document {
     @Prop({ type: [Project], default: [] })
     projects: Project[];  // Embedding Project schema
 }
+export const UserSchema = SchemaFactory.createForClass(User);
