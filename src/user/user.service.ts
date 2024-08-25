@@ -16,4 +16,7 @@ export class UserService {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
+  async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+    return this.userModel.findByIdAndUpdate(userId, updateUserDto, { new: true }).exec();
+  }
 }
