@@ -46,5 +46,8 @@ class Component extends Document{
 class Page extends Document {
     @Prop({ required: true })
     name:string;
+    
+    @Prop({ required: true })
+    jsxFilePath: string; 
 
 }
