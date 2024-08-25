@@ -2,20 +2,6 @@ import { Prop ,Schema, SchemaFactory} from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
 @Schema()
-class User extends Document {
-    @Prop({required:true })
-    name: string;
-
-    @Prop({required:true ,unique: true})
-    email: string;
-    
-    @Prop({required:true})
-    password: string;
-}
-
-
-
-@Schema()
 class Deployment extends Document{
     @Prop({required:true})
     status:string
@@ -55,7 +41,7 @@ class Page extends Document {
 }
 
 @Schema()
-export class Project extends Document {
+class Project extends Document {
   @Prop({ required: true })
   name: string;
 
@@ -72,4 +58,17 @@ export class Project extends Document {
   updatedAt: Date;
 }
 
+@Schema()
+class User extends Document {
+    @Prop({required:true })
+    name: string;
 
+    @Prop({required:true ,unique: true})
+    email: string;
+    
+    @Prop({required:true})
+    password: string;
+    
+    @Prop({ type: [Project], default: [] })
+    projects: Project[];  // Embedding Project schema
+}
