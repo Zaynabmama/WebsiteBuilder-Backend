@@ -16,7 +16,7 @@ class User extends Document {
 
 
 @Schema()
-class deployment extends Document{
+class Deployment extends Document{
     @Prop({required:true})
     status:string
 
@@ -53,4 +53,23 @@ class Page extends Document {
     @Prop({type:[Component],default:[]})
     components: Component[];  // Embedding Component schema
 }
+
+@Schema()
+export class Project extends Document {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ type: [Page], default: [] })
+  pages: Page[];
+
+  @Prop({ type: Deployment })
+  deployment: Deployment; 
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+
+  @Prop({ default: Date.now })
+  updatedAt: Date;
+}
+
 
