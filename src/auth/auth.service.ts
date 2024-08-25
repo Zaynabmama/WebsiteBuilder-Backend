@@ -20,5 +20,10 @@ export class AuthService {
     return null; //validation failed
   }
 
-
+  async login(user: any) {
+    const payload = { name: user.name, sub: user.userId }; 
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }
