@@ -19,6 +19,11 @@ update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   findOne(@Param('id') id: string) {
   return this.userService.findUserById(id);
 }
+  @Get()
+  findAll() {
+  return this.userService.findAllUsers();
+  }
+
  
   
 }
