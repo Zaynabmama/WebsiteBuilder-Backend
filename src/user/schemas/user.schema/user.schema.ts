@@ -1,8 +1,8 @@
-import { Prop ,Schema, SchemaFactory, } from "@nestjs/mongoose";
+import { Prop ,Schema, SchemaFactory} from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
 @Schema()
-export class User extends Document {
+class User extends Document {
     @Prop({required:true })
     name: string;
 
@@ -12,11 +12,11 @@ export class User extends Document {
     @Prop({required:true})
     password: string;
 }
-export const UserSchema =SchemaFactory.createForClass(User);
+
 
 
 @Schema()
-export class deployment extends Document{
+class deployment extends Document{
     @Prop({required:true})
     status:string
 
@@ -27,10 +27,10 @@ export class deployment extends Document{
     deployedAt: Date; 
 
 }
-export const DeploymentSchema =SchemaFactory.createForClass(deployment);
+
 
 @Schema()
-export class Component extends Document{
+class Component extends Document{
     @Prop({required:true})
     type: string;
     @Prop({type:Object})
@@ -42,4 +42,9 @@ export class Component extends Document{
     };
 
 }
-export const ComponentSchema =SchemaFactory.createForClass(Component);
+@Schema()
+class Page extends Document {
+    @Prop({ required: true })
+    name:string;
+
+}
