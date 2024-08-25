@@ -50,4 +50,7 @@ class Page extends Document {
     @Prop({ required: true })
     jsxFilePath: string; 
 
+    @Prop({type:[Component],default:[]})
+    components: Component[];  // Embedding Component schema
 }
+
