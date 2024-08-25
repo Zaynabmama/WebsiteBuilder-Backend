@@ -28,3 +28,11 @@ export class deployment extends Document{
 
 }
 export const DeploymentSchema =SchemaFactory.createForClass(deployment);
+
+@Schema()
+export class Component extends Document{
+    @Prop({required:true})
+    type: string;
+
+
+}
