@@ -27,5 +27,8 @@ export class UserService {
     const users = await this.userModel.find();
     return users;
   }
-  
+  async deleteUser(userId: string): Promise<User> {
+    const deletedUser = await this.userModel.findByIdAndDelete(userId);
+    return deletedUser;
+  }
 }
