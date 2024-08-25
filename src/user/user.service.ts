@@ -12,7 +12,7 @@ export class UserService {
     console.log('UserModel has been injected');
   }
 
-  async createUser(createUserDto: any): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
     return createdUser.save();
   }
