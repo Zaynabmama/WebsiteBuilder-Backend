@@ -8,8 +8,13 @@ import { User } from './schemas/user.schema/user.schema';
 @Injectable()
 // provider :it can be injected in def place  as dependencies
 export class UserService {
+  
+  
   constructor(@InjectModel(User.name) private userModel: Model<User>) {
     console.log('UserModel has been injected');
+  }
+  async findOne(name: string): Promise<User | null> {
+    return this.userModel.findOne({ name });
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
