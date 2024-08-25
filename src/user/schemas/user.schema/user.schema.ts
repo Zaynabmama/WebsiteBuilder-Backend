@@ -50,7 +50,7 @@ class Project extends Document {
 
 }
 
-@Schema({timestamps: true})
+export @Schema({timestamps: true})
 class User extends Document {
     @Prop({required:true })
     name: string;
