@@ -33,6 +33,12 @@ export const DeploymentSchema =SchemaFactory.createForClass(deployment);
 export class Component extends Document{
     @Prop({required:true})
     type: string;
-
+    @Prop({type:Object})
+    properties:{
+        color?: string;  //color property
+        text?: string;  //text property
+        x?: number;  //x-coordinate
+        y?: number;  //y-coordinate
+    };
 
 }
