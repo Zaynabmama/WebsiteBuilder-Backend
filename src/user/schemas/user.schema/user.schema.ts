@@ -13,3 +13,18 @@ export class User extends Document {
     password: string;
 }
 export const UserSchema =SchemaFactory.createForClass(User);
+
+
+@Schema()
+export class deployment extends Document{
+    @Prop({required:true})
+    status:string
+
+    @Prop({required:true})
+    url:string
+
+    @Prop({default:Date.now})
+    deployedAt: Date; 
+
+}
+export const DeploymentSchema =SchemaFactory.createForClass(deployment);
