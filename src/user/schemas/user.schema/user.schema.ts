@@ -1,7 +1,7 @@
 import { Prop ,Schema, SchemaFactory} from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-@Schema()
+@Schema({timestamps: true})
 class Deployment extends Document{
     @Prop({required:true})
     status:string
@@ -9,13 +9,10 @@ class Deployment extends Document{
     @Prop({required:true})
     url:string
 
-    @Prop({default:Date.now})
-    deployedAt: Date; 
-
 }
 
 
-@Schema()
+@Schema({timestamps: true})
 class Component extends Document{
     @Prop({required:true})
     type: string;
@@ -28,7 +25,7 @@ class Component extends Document{
     };
 
 }
-@Schema()
+@Schema({timestamps: true})
 class Page extends Document {
     @Prop({ required: true })
     name:string;
@@ -40,7 +37,7 @@ class Page extends Document {
     components: Component[];  // Embedding Component schema
 }
 
-@Schema()
+@Schema({timestamps: true})
 class Project extends Document {
   @Prop({ required: true })
   name: string;
@@ -51,14 +48,9 @@ class Project extends Document {
   @Prop({ type: Deployment })
   deployment: Deployment; 
 
-  @Prop({ default: Date.now })
-  createdAt: Date;
-
-  @Prop({ default: Date.now })
-  updatedAt: Date;
 }
 
-@Schema()
+@Schema({timestamps: true})
 class User extends Document {
     @Prop({required:true })
     name: string;
