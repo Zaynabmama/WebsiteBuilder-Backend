@@ -11,5 +11,6 @@ import { User, UserSchema } from './schemas/user.schema/user.schema';
 
   controllers: [UserController],//api endpoints
   providers: [UserService],//business logic for users
+  exports: [UserService]
 })
 export class UserModule {}
