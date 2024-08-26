@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -8,7 +8,7 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
   
   @Post()
-  async createProject() {
-   
+  async createProject(@Req() req) {
+    const userId = req.user.userId; //extract userId from auth request
   }
 }
