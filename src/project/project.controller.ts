@@ -11,5 +11,6 @@ export class ProjectController {
   @Post()
   async createProject(@Req() req , @Body() createProjectDto: CreateProjectDto) {
     const userId = req.user.userId; //extract userId from auth request
+    return this.projectService.createProject(userId, createProjectDto);
   }
 }
