@@ -24,17 +24,17 @@ import { JwtModule } from '@nestjs/jwt';
       },
       inject: [ConfigService],
     }),
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        const secret = configService.get<string>('JWT_SECRET');
-        console.log('JWT_SECRET:', secret); 
-        return {
-          secret,
-          signOptions: { expiresIn: '60m' },
-        };
-      },
-    }),
+    // JwtModule.registerAsync({
+    //   inject: [ConfigService],
+    //   useFactory: async (configService: ConfigService) => {
+    //     const secret = configService.get<string>('JWT_SECRET');
+    //     console.log('JWT_SECRET:', secret); 
+    //     return {
+    //       secret,
+    //       signOptions: { expiresIn: '60m' },
+    //     };
+    //   },
+    // }),
      UserModule,
      AuthModule,
   ],
