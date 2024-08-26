@@ -22,6 +22,11 @@ export class ProjectService {
     
     return user;
   }
+  async listProjects(userId: string): Promise<any[]> {
+    const user = await this.userModel.findById(userId);
+
+    return user.projects;
+  }
 
 
 }
