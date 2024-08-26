@@ -45,5 +45,26 @@ export class ProjectService {
     
   }
 
+  async deleteProjectById(userId: string, projectId: string): Promise<any> {
+    const user = await this.userModel.findById(userId).exec();
+  
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+  
+    const project = user.projects.id(projectId);
+  
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+  
+    await project.deleteOne();
+  
+    await user.save();
+  
+    return null;
+  }
+  
+
 
 }
