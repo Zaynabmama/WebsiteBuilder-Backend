@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -24,5 +24,11 @@ export class ProjectController {
   async getProjectById(@Req() req, @Param('projectId') projectId: string) {
     const userId = req.user.userId;  //extract userId from auth request
     return this.projectService.getProjectById(userId, projectId);
+  }
+  @Delete(':projectId')
+  @HttpCode(HttpStatus.NO_CONTENT) // 204
+  async deleteProjectById(@Req() req, @Param('projectId') projectId: string): Promise<void> {
+    const userId = req.user.userId; // Extract the authenticated user's ID
+    await this.projectService.deleteProjectById(userId, projectId);
   }
 }
