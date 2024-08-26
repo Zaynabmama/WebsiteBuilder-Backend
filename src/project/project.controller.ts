@@ -17,6 +17,7 @@ export class ProjectController {
   @Get()
   async listProjects(@Req() req) {
     const userId = req.user.userId;
+    return this.projectService.listProjects(userId);
   
 }
 }
