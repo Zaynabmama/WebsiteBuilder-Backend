@@ -31,6 +31,7 @@ export class ProjectService {
     return user.projects;
   }
   async getProjectById(userId: string, projectId: string): Promise<any> {
+    const user = await this.userModel.findById(userId);
     
   }
 
