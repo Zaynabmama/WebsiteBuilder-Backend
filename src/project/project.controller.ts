@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -13,4 +13,9 @@ export class ProjectController {
     const userId = req.user.userId; //extract userId from auth request
     return this.projectService.createProject(userId, createProjectDto);
   }
+
+  @Get()
+  async listProjects() {
+  
+}
 }
