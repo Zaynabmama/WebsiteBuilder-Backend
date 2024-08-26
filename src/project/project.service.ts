@@ -11,4 +11,17 @@ export class ProjectService {
     @InjectModel(User.name) private userModel: Model<User>,// injects the Mongoose model associated with the User schema to interact with the User collection in MongoDB
   ) {}
 
+  async createProject(userId: string, createProjectDto: CreateProjectDto): Promise<User> {
+    const user = await this.userModel.findById(userId);
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+    user.projects.push(createProjectDto);
+    await user.save();
+    
+    return user;
+  }
+
+
 }
