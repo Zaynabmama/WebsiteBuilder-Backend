@@ -9,7 +9,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService
     )  {
-        console.log('JwtService injected:');
+        console.log('JwtService injected');
       }
 
 
