@@ -3,6 +3,7 @@ import { UserService } from './user.service';//controllers depends on services ,
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('user')
@@ -21,6 +22,7 @@ update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   findOne(@Param('id') id: string) {
   return this.userService.findUserById(id);
 }
+   @UseGuards( RolesGuard)
   @Get()
   findAll() {
   return this.userService.findAllUsers();
