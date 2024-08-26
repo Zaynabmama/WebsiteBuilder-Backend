@@ -61,6 +61,9 @@ class User extends Document {
     @Prop({required:true})
     password: string;
     
+    @Prop({ required: true, enum: ['admin', 'user']})
+    role: string; 
+
     @Prop({ type: [Project], default: [] })
     projects: Project[];  // Embedding Project schema
 }
