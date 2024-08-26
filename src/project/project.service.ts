@@ -25,6 +25,9 @@ export class ProjectService {
   async listProjects(userId: string): Promise<any[]> {
     const user = await this.userModel.findById(userId);
 
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return user.projects;
   }
 
