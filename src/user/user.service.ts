@@ -12,13 +12,16 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   
   
+  
   constructor(@InjectModel(User.name) private userModel: Model<User>) {
     console.log('UserModel has been injected');
   }
-  async findOne(name: string): Promise<User | null> {
-    return this.userModel.findOne({ name });
+  // async findOne(name: string): Promise<User | null> {
+  //   return this.userModel.findOne({ name });
+  // }
+findOne(email: string) {
+    return this.userModel.findOne({ email });
   }
-
   
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const salt = await bcrypt.genSalt(); 
