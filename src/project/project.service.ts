@@ -15,7 +15,7 @@ export class ProjectService {
     const user = await this.userModel.findById(userId);
     
     if (!user) {
-      throw new Error('User not found');
+        throw new NotFoundException('User not found');
     }
     user.projects.push(createProjectDto as any);
     await user.save();
@@ -58,11 +58,10 @@ export class ProjectService {
       throw new NotFoundException('Project not found');
     }
   
-    await project.deleteOne();
-  
+    user.projects.pull(projectId);
+    
     await user.save();
   
-    return null;
   }
   
 
