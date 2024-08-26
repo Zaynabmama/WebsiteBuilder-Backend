@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema/user.schema';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 // provider :it can be injected in def place  as dependencies
@@ -17,8 +19,14 @@ export class UserService {
     return this.userModel.findOne({ name });
   }
 
+  
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const createdUser = new this.userModel(createUserDto);
+    const salt = await bcrypt.genSalt(); 
+    const hashedPassword = await bcrypt.hash(createUserDto.password, salt); 
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword, 
+    });
     return createdUser.save();
   }
   async updateUser(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
