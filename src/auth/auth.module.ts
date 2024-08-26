@@ -11,6 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
   imports: [
     UserModule,
     PassportModule,
+    JwtModule,
     // JwtModule.registerAsync({
     //   imports: [ConfigModule],
     //   inject: [ConfigService],

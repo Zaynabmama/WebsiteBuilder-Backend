@@ -8,7 +8,9 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService
-    ) {} 
+    )  {
+        console.log('JwtService injected:');
+      }
 
 
   async validateUser(username: string, pass: string): Promise<any> {
