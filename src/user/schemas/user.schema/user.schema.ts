@@ -63,7 +63,7 @@ export class User extends Document {
     role: string;
 
     @Prop({ type: [Project], default: [] })
-    projects: Project[]; // Embedding Project schema
+    projects: Types.DocumentArray<Project>; // Embedding Project schema
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
