@@ -23,6 +23,8 @@ constructor(
       throw new NotFoundException('Page not found');
       }
     const newComponent = page.components.push(createComponentDto);
+    await user.save();
+
 
   }
 }
