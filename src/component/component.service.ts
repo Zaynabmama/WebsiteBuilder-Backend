@@ -22,10 +22,11 @@ constructor(
     if (!page) {
       throw new NotFoundException('Page not found');
       }
-    const newComponent = page.components.push(createComponentDto);
+    const newComponent = page.components.create(createComponentDto);
+    page.components.push(newComponent);
     await user.save();
-    return newComponent;
 
+    return newComponent;
 
   }
 }
