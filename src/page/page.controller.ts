@@ -33,4 +33,12 @@ export class PageController {
     const userId = req.user.userId;
     await this.pageService.deletePage(userId, projectId, pageId);
   }
+
+  @Get(':pageId')
+  async getPageById(@Req() req, @Param('projectId') projectId: string, @Param('pageId') pageId: string) {
+    const userId = req.user.userId;  //extract userId from auth request
+    return this.pageService.getPageById(userId, projectId,pageId);
+  }
+
+
 }
