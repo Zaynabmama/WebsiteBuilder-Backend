@@ -24,6 +24,7 @@ constructor(
       }
     const newComponent = page.components.push(createComponentDto);
     await user.save();
+    return newComponent;
 
 
   }
