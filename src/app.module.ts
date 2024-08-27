@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProjectModule } from './project/project.module';
+import { PageModule } from './page/page.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ProjectModule } from './project/project.module';
      UserModule,
      AuthModule,
      ProjectModule,
+     PageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
