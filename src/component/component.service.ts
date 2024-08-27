@@ -18,5 +18,7 @@ constructor(
     if (!project) {
       throw new NotFoundException('Project not found');
     }
-}
+    const page = project.pages.id(pageId);
+
+  }
 }
