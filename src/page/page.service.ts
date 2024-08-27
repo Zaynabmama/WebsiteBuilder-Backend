@@ -20,7 +20,10 @@ export class PageService {
         if (!project) {
             throw new NotFoundException('Project not found');
         }
-    
-    
+        project.pages.push(createPageDto as any);
+
+
+        await user.save();
+  
       }
 }
