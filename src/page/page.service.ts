@@ -21,13 +21,25 @@ export class PageService {
         if (!project) {
             throw new NotFoundException('Project not found');
         }
-        const newPage=user.projects.push(createPageDto as any);
+        //const newPage=user.projects.push(createPageDto as any);
     
-        project.pages.push(createPageDto as any);
+        const newPage=project.pages.push(createPageDto as any);
 
 
         await user.save();
         return newPage
-  
+      }
+      async listPages(userId: string, projectId: string): Promise<any[]> {
+        const user = await this.userModel.findById(userId);
+        if (!user) {
+          throw new NotFoundException('User not found');
+        }
+    
+        const project = user.projects.id(projectId);
+        if (!project) {
+          throw new NotFoundException('Project not found');
+        }
+    
+        return project.pages;
       }
 }
