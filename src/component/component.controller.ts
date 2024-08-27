@@ -4,11 +4,11 @@ import { CreateComponentDto } from './dto/create-component.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
-@Controller(':projectId/:pageId/components')
+@Controller('components')
 export class ComponentController {
     constructor(private readonly componentService: ComponentService) {}
 
-    @Post()
+    @Post(':projectId/:pageId')
     async addComponent(
         @Req() req,
         @Param('projectId') projectId: string,
