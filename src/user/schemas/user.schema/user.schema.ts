@@ -42,7 +42,7 @@ class Project {
     name: string;
 
     @Prop({ type: [Page], default: [] })
-    pages: Page[];
+    pages: Types.DocumentArray<Page>;
 
     @Prop({ type: Deployment })
     deployment: Deployment;
