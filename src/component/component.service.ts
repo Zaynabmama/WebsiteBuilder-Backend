@@ -15,5 +15,8 @@ constructor(
       throw new NotFoundException('User not found');
     }
     const project = user.projects.id(projectId);
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
 }
 }
