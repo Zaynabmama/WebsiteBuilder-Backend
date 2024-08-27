@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('component')
+@Controller('userId/:projectId/:pageId/components')
 export class ComponentController {}
