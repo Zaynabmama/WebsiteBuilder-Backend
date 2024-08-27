@@ -21,10 +21,13 @@ export class PageService {
         if (!project) {
             throw new NotFoundException('Project not found');
         }
+        const newPage=user.projects.push(createPageDto as any);
+    
         project.pages.push(createPageDto as any);
 
 
         await user.save();
+        return newPage
   
       }
 }
