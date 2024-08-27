@@ -10,7 +10,9 @@ export class PageController {
 
 
     @Post()
-    async createProject(@Req() req  ,projectId: string, createPageDto: CreatePageDto) {
+    async createPage(@Req() req  ,projectId: string, createPageDto: CreatePageDto) {
     const userId = req.user.userId; //extract userId from auth request
+    return this.pageService.createPage(userId, projectId, createPageDto);
+  
   }
 }
