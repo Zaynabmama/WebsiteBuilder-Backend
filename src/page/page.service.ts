@@ -16,6 +16,7 @@ export class PageService {
             throw new NotFoundException('User not found');
           }
         const project = user.projects.id(projectId);
+        const jsxFilePath = `src/projects/${projectId}/${createPageDto.name}.jsx`;
     
         if (!project) {
             throw new NotFoundException('Project not found');
