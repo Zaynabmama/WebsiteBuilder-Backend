@@ -12,7 +12,9 @@ export class PageService {
       ) {}
       async createPage(userId: string, projectId: string, createPageDto: CreatePageDto): Promise<any> {
         const user = await this.userModel.findById(userId);
-        
+        if (!user) {
+            throw new NotFoundException('User not found');
+          }
     
     
       }
