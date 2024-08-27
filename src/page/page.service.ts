@@ -9,4 +9,7 @@ export class PageService {
 
         @InjectModel(User.name) private userModel: Model<User>,
       ) {}
+      async createPage(userId: string, projectId: string, createPageDto: CreatePageDto): Promise<any> {
+        
+      }
 }
