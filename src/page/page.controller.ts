@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
-import { ProjectService } from 'src/project/project.service';
+import { PageService } from './page.service';
 
 @Controller('page')
 export class PageController {
-    constructor(private readonly projectService: ProjectService) {}
+    constructor(private readonly pageService: PageService) {}
 }
