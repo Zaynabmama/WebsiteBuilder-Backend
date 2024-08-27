@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { PageService } from './page.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreatePageDto } from './dto/create-page.dto';
@@ -14,5 +14,13 @@ export class PageController {
     const userId = req.user.userId; //extract userId from auth request
     return this.pageService.createPage(userId, projectId, createPageDto);
   
+  }
+  @Get()
+  async listPages(
+    @Req() req,
+    @Param('projectId') projectId: string,
+  ) {
+    const userId = req.user.userId;
+    return this.pageService.listPages(userId, projectId);
   }
 }
