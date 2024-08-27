@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { PageService } from './page.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreatePageDto } from './dto/create-page.dto';
@@ -22,5 +22,15 @@ export class PageController {
   ) {
     const userId = req.user.userId;
     return this.pageService.listPages(userId, projectId);
+  }
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':pageId')
+  async deletePage(
+    @Req() req,
+    @Param('projectId') projectId: string,
+    @Param('pageId') pageId: string,
+  ) {
+    const userId = req.user.userId;
+    await this.pageService.deletePage(userId, projectId, pageId);
   }
 }
