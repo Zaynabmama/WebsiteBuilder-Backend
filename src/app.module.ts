@@ -9,6 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ProjectModule } from './project/project.module';
 import { PageModule } from './page/page.module';
 import { ComponentModule } from './component/component.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ComponentModule } from './component/component.module';
      ProjectModule,
      PageModule,
      ComponentModule,
+     FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
