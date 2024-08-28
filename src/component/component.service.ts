@@ -83,5 +83,14 @@ async updateComponent(userId: string, projectId: string, pageId: string, compone
   return component;
 }
 
+async getComponents(userId: string, projectId: string, pageId: string): Promise<any> {
+  const user = await this.userModel.findById(userId);
+  const project = user.projects.id(projectId);
+
+  const page = project.pages.id(pageId);
+  return page.components;
+}
+
+
 
 }
