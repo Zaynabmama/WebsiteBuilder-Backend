@@ -20,4 +20,6 @@ export class FileService {
       },
     });
   }
+
+  async uploadJsxFile(content: string, filename: string): Promise<void> {}
 }
