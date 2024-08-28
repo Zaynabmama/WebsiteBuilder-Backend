@@ -10,6 +10,8 @@ import { ProjectModule } from './project/project.module';
 import { PageModule } from './page/page.module';
 import { ComponentModule } from './component/component.module';
 import { FileModule } from './file/file.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -27,6 +29,10 @@ import { FileModule } from './file/file.module';
         };
       },
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),  // Serve files from the 'uploads' directory
+      serveRoot: '/uploads',  // Access these files via '/uploads' in the browser
     }),
     // JwtModule.registerAsync({
     //   inject: [ConfigService],
