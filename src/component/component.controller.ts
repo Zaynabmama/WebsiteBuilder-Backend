@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ComponentService } from './component.service';
 import { CreateComponentDto } from './dto/create-component.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -39,8 +39,18 @@ export class ComponentController {
     ): Promise<any> {
         const userId = req.user.userId;
         return this.componentService.updateComponent(userId, projectId, pageId, componentId, updateComponentDto);
+    }
 
-}
+    @Get(':projectId/:pageId')
+    async getComponents(
+    @Req() req,
+    @Param('projectId') projectId: string,
+    @Param('pageId') pageId: string,
+    ): Promise<any> {
+    const userId = req.user.userId;
+    return this.componentService.getComponents(userId, projectId, pageId);
+    }
+
 
 
 
