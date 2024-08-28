@@ -9,6 +9,7 @@ import { MulterModule } from '@nestjs/platform-express';
           useFactory: (fileService: FileService) => ({
             storage: fileService.getMulterStorage(),
           }),
+          inject: [FileService],
         }),
       ],
   controllers: [FileController],
