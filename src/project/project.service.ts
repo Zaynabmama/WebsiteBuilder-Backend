@@ -17,7 +17,8 @@ export class ProjectService {
     if (!user) {
         throw new NotFoundException('User not found');
     }
-    const newProject=user.projects.push(createProjectDto as any);
+    const newProject=user.projects.create(createProjectDto as any);
+    user.projects.push(newProject);
     await user.save();
     
     return newProject;
