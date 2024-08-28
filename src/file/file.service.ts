@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { writeFile } from 'fs/promises';
 import { diskStorage } from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,5 +22,9 @@ export class FileService {
     });
   }
 
-  async uploadJsxFile(content: string, filename: string): Promise<void> {}
+  async uploadJsxFile(content: string, filename: string): Promise<void> {
+    const filePath = path.join(__dirname, '..', '..', 'uploads', filename);
+    await writeFile(filePath, content, 'utf8');
+  }
+
 }
