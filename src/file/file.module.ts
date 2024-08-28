@@ -13,6 +13,7 @@ import { MulterModule } from '@nestjs/platform-express';
         }),
       ],
   controllers: [FileController],
-  providers: [FileService]
+  providers: [FileService],
+  exports: [FileService],
 })
 export class FileModule {}
