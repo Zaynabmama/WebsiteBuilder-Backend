@@ -8,8 +8,14 @@ export class FileController {
     
     @Post('upload')
     @UseInterceptors(FileInterceptor('file')) //file:form field that contains the file
-    
+
     uploadFile(@UploadedFile() file: Express.Multer.File) {
+        
+        return {
+            originalname: file.originalname,
+            filename: file.filename,
+            path: file.path,
+        }; 
     }
     
 }
