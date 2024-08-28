@@ -23,7 +23,8 @@ export class PageService {
         }
         //const newPage=user.projects.push(createPageDto as any);
     
-        const newPage=project.pages.push(createPageDto as any);
+        const newPage=project.pages.create(createPageDto as any);
+        project.pages.push(newPage);
 
 
         await user.save();
