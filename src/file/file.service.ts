@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { writeFile } from 'fs/promises';
 import { diskStorage } from 'multer';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import * as path from 'path';
+
 
 @Injectable()
 export class FileService {

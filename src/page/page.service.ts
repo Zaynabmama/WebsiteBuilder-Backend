@@ -10,7 +10,7 @@ export class PageService {
     constructor(
 
         @InjectModel(User.name) private userModel: Model<User>,
-        private readonly fileService: FileService,
+         private readonly fileService: FileService
       ) {}
       async createPage(userId: string, projectId: string, createPageDto: CreatePageDto): Promise<any> {
         const user = await this.userModel.findById(userId);
@@ -24,14 +24,21 @@ export class PageService {
             throw new NotFoundException('Project not found');
         }
         //const newPage=user.projects.push(createPageDto as any);
-    
-        const newPage=project.pages.create(createPageDto as any);
+        const jsxFilename = `page-${createPageDto.name}.jsx`;
+        const newPage = project.pages.create({
+          ...createPageDto,
+          jsxFilePath: jsxFilename, // Set the jsxFilePath here
+        });
         project.pages.push(newPage);
-
-
+        const jsxContent = this.generateInitialJsxContent();
+        
+        await this.fileService.uploadJsxFile(jsxContent, jsxFilename); // Save JSX content to a file
         await user.save();
         return newPage
       }
+  generateInitialJsxContent() : string  {
+    return `<div>\n</div>`;
+  }
       async listPages(userId: string, projectId: string): Promise<any[]> {
         const user = await this.userModel.findById(userId);
         if (!user) {
