@@ -3,7 +3,8 @@ import { PageService } from './page.service';
 import { PageController } from './page.controller';
 import { UserModule } from 'src/user/user.module';
 import { FileModule } from 'src/file/file.module';
-import { ComponentModule } from 'src/component/component.module';
+
+import { JSXGeneratorModule } from 'src/jsxgenerate/jsxgenerate.module';
 
 
 
@@ -12,6 +13,7 @@ import { ComponentModule } from 'src/component/component.module';
   imports:[
     UserModule ,
     FileModule,
+    JSXGeneratorModule
     //ComponentModule,
   ],
   providers: [PageService],
