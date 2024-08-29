@@ -4,13 +4,14 @@ import { Model } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema/user.schema';
 import { CreatePageDto } from './dto/create-page.dto';
 import { FileService } from 'src/file/file.service';
-
+import { JSXGeneratorService } from '../jsxgenerate/jsxgenerate.service';
 @Injectable()
 export class PageService {
     constructor(
 
         @InjectModel(User.name) private userModel: Model<User>,
          private readonly fileService: FileService,
+         private readonly jsxGeneratorService: JSXGeneratorService
         // private readonly componentService: ComponentService,
       ) {}
   //     async createPage(userId: string, projectId: string, createPageDto: CreatePageDto): Promise<any> {
@@ -58,43 +59,25 @@ export class PageService {
     
     const newPage = project.pages.create({
         ...createPageDto,
-        jsxFilePath,
+        jsxFilePath: `${jsxFilePath}`,
     });
     project.pages.push(newPage);
 
-    const jsxContent = this.generateJsxContent([]);
+    // const jsxContent = this.generateJsxContent([]);
 
-    await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
-    await user.save();
+    // await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
+    // await user.save();
 
     
+    // return newPage;
+ 
+    await user.save();
+
+    // Generate and save the JSX file
+    await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
+
     return newPage;
-}
-
-private generateJsxContent(components: any[]): string {
-  return `
-import React from 'react';
-
-const Page = () => (
-  <div style={{ display: 'flex', flexDirection: 'column' }}>
-    ${components.map(comp => this.generateComponent(comp)).join('\n    ')}
-  </div>
-);
-
-export default Page;
-  `;
-}
-
-private generateComponent(comp: any): string {
-  const props = this.generateProps(comp.properties);
-  return `<${comp.type} ${props} />`;
-}
-
-private generateProps(properties: any): string {
-  return Object.keys(properties || {})
-    .map(prop => `${prop}="${properties[prop]}"`)
-    .join(' ');
-}
+  }
 
 
       async listPages(userId: string, projectId: string): Promise<any[]> {
