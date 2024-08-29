@@ -4,11 +4,13 @@ import { Model, Types } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema/user.schema';
 import { CreateComponentDto } from './dto/create-component.dto';
 import {UpdateComponentDto} from './dto/update-component.dto';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class ComponentService {
 constructor(
     @InjectModel(User.name) private userModel: Model<User>,// injects the Mongoose model associated with the User schema to interact with the User collection in MongoDB
+    private readonly fileService: FileService,
   ) {}
   async addOrUpdateComponents(userId: string,projectId:string, pageId:string , components: CreateComponentDto[]): Promise<any> {
     const user = await this.userModel.findById(userId);
@@ -42,8 +44,15 @@ constructor(
       });
       
       await user.save();
-      
+     
+      const updatedJsxContent = this.generateJsxContent(page.components);
+      await this.fileService.uploadJsxFile(updatedJsxContent, page.jsxFilePath);
+
       return page;
+  }
+  generateJsxContent(components: any[]): string {
+    return components.map(comp => `<${comp.type} {...${JSON.stringify(comp.properties)}} />`).join('\n');
+  }
       
   //   const existingComponent = page.components.id(componentId);
   //   if (existingComponent) {
@@ -59,7 +68,7 @@ constructor(
 
   //    return page;
 
-   }
+   
   async deleteComponent(userId: string, projectId: string, pageId: string, componentId: string): Promise<any> {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -83,6 +92,8 @@ constructor(
 
     page.components.pull(componentId);
     await user.save();
+    const updatedJsxContent = this.generateJsxContent(page.components);
+    await this.fileService.uploadJsxFile(updatedJsxContent, page.jsxFilePath);
 
     return { message: 'Component deleted successfully' };
 }
