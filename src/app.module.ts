@@ -13,6 +13,7 @@ import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JSXGeneratorModule } from './jsxgenerate/jsxgenerate.module';
+import { DeploymentModule } from './deployment/deployment.module';
 
 
 @Module({
@@ -54,6 +55,7 @@ import { JSXGeneratorModule } from './jsxgenerate/jsxgenerate.module';
      ComponentModule,
      FileModule,
      JSXGeneratorModule,
+     DeploymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
