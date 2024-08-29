@@ -8,5 +8,9 @@ export class DeploymentService {
         const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
         console.log(`Netlify API URL: ${apiUrl}`);
         console.log(`Netlify API Key: ${apiKey}`);
+        
+        const payload = {
+        name: `user-site-${userId}-${projectId}`,
+  };
       }
 }
