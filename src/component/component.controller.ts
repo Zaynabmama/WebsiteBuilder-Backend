@@ -14,10 +14,10 @@ export class ComponentController {
         @Req() req,
         @Param('projectId') projectId: string,
         @Param('pageId') pageId: string,
-        @Body() createComponentDto: CreateComponentDto,
+        @Body() components: CreateComponentDto[],
     ): Promise<any> {
         const userId = req.user.userId;
-        return this.componentService.addComponent(userId, projectId, pageId, createComponentDto);
+        return this.componentService.addOrUpdateComponents(userId, projectId, pageId, components);
     }
     @Delete(':projectId/:pageId/components/:componentId')
     async deleteComponent(

@@ -3,6 +3,7 @@ import { PageService } from './page.service';
 import { PageController } from './page.controller';
 import { UserModule } from 'src/user/user.module';
 import { FileModule } from 'src/file/file.module';
+import { ComponentModule } from 'src/component/component.module';
 
 
 
@@ -10,7 +11,8 @@ import { FileModule } from 'src/file/file.module';
 @Module({
   imports:[
     UserModule ,
-    FileModule
+    FileModule,
+    //ComponentModule,
   ],
   providers: [PageService],
   controllers: [PageController]
