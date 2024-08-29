@@ -14,6 +14,20 @@ constructor(
     private readonly fileService: FileService,
     private readonly jsxGeneratorService: JSXGeneratorService,
   ) {}
+
+   async findPage(userId: string, projectId: string, pageId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+  
+    const project = user.projects.id(projectId);
+    if (!project) throw new NotFoundException('Project not found');
+  
+    const page = project.pages.id(pageId);
+    if (!page) throw new NotFoundException('Page not found');
+  
+    return { user, project, page }; 
+  }
+  
   async addOrUpdateComponents(userId: string,projectId:string, pageId:string , components: CreateComponentDto[]): Promise<any> {
     const user = await this.userModel.findById(userId);
     if (!user) {
