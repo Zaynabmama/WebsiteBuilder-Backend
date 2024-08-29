@@ -18,9 +18,14 @@ class Component {
     @Prop({ type: Object })
     properties: {
         color?: string;
-        text?: string;
-        x?: number;
-        y?: number;
+        text?: string;         
+        backgroundColor?: string; 
+        flex?: string;           
+        fontSize?: string;       
+        placeholder?: string;    
+        type?: string;         
+        alignItems?: string;
+        justifyContent?: string;
     };
 }
 
@@ -29,7 +34,7 @@ class Page {
     @Prop({ required: true })
     name: string;
     
-    @Prop({ required: true })
+    @Prop()
     jsxFilePath: string;
 
     @Prop({ type: [Component], default: [] })

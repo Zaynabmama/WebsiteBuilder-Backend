@@ -62,7 +62,7 @@ export class PageService {
     });
     project.pages.push(newPage);
 
-    const jsxContent = this.generateInitialJsxContent();
+    const jsxContent = this.generateJsxContent([]);
 
     await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
     await user.save();
@@ -71,8 +71,31 @@ export class PageService {
     return newPage;
 }
 
-    generateInitialJsxContent(): string {
-    return `<div>\n</div>`;}
+private generateJsxContent(components: any[]): string {
+  return `
+import React from 'react';
+
+const Page = () => (
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
+    ${components.map(comp => this.generateComponent(comp)).join('\n    ')}
+  </div>
+);
+
+export default Page;
+  `;
+}
+
+private generateComponent(comp: any): string {
+  const props = this.generateProps(comp.properties);
+  return `<${comp.type} ${props} />`;
+}
+
+private generateProps(properties: any): string {
+  return Object.keys(properties || {})
+    .map(prop => `${prop}="${properties[prop]}"`)
+    .join(' ');
+}
+
 
       async listPages(userId: string, projectId: string): Promise<any[]> {
         const user = await this.userModel.findById(userId);

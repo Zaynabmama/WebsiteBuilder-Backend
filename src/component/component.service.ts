@@ -50,8 +50,29 @@ constructor(
 
       return page;
   }
-  generateJsxContent(components: any[]): string {
-    return components.map(comp => `<${comp.type} {...${JSON.stringify(comp.properties)}} />`).join('\n');
+  private generateJsxContent(components: any[]): string {
+    return `
+import React from 'react';
+
+const Page = () => (
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
+    ${components.map(comp => this.generateComponent(comp)).join('\n    ')}
+  </div>
+);
+
+export default Page;
+    `;
+  }
+
+  private generateComponent(comp: any): string {
+    const props = this.generateProps(comp.properties);
+    return `<${comp.type} ${props} />`;
+  }
+
+  private generateProps(properties: any): string {
+    return Object.keys(properties || {})
+      .map(prop => `${prop}="${properties[prop]}"`)
+      .join(' ');
   }
       
   //   const existingComponent = page.components.id(componentId);
