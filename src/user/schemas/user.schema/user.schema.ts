@@ -8,6 +8,9 @@ class Deployment {
 
     @Prop({ required: true })
     url: string;
+
+    @Prop({ required: true })
+    siteId: string;
 }
 
 @Schema({ timestamps: true })
