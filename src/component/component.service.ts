@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema/user.schema';
@@ -41,10 +41,11 @@ constructor(
           }
         } else {
           console.log('Add new component without an id.');
-          page.components.push(componentDto); // will generate a new id
+          const newComponent = page.components.create(componentDto);
+          page.components.push(newComponent); // will generate a new id
         }
       });
-      
+      try {
       await user.save();
      
       await this.jsxGeneratorService.generateAndSaveJsxFile(
@@ -54,8 +55,11 @@ constructor(
 
     return page;
   
+      }
+      catch (error) {
+      throw new InternalServerErrorException('Could not save changes or generate JSX');
   }
-  
+}
       
   //   const existingComponent = page.components.id(componentId);
   //   if (existingComponent) {
