@@ -18,5 +18,9 @@ export class DeploymentService {
               Authorization: `Bearer ${apiKey}`,
             },
           });
+        const siteId = response.data.id;
+        console.log(`Site created with ID: ${siteId}`);
+          
+        return siteId;  
       }
 }
