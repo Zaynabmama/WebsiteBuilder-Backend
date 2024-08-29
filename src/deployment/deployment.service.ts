@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 @Injectable()
 export class DeploymentService {
     constructor(private configService: ConfigService) {}
@@ -8,9 +9,14 @@ export class DeploymentService {
         const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
         console.log(`Netlify API URL: ${apiUrl}`);
         console.log(`Netlify API Key: ${apiKey}`);
-        
+
         const payload = {
         name: `user-site-${userId}-${projectId}`,
-  };
+        };
+        const response = await axios.post(apiUrl, payload, {
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+            },
+          });
       }
 }
