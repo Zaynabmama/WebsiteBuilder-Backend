@@ -5,12 +5,14 @@ import { User } from 'src/user/schemas/user.schema/user.schema';
 import { CreateComponentDto } from './dto/create-component.dto';
 import {UpdateComponentDto} from './dto/update-component.dto';
 import { FileService } from 'src/file/file.service';
+import { JSXGeneratorService } from 'src/jsxgenerate/jsxgenerate.service';
 
 @Injectable()
 export class ComponentService {
 constructor(
     @InjectModel(User.name) private userModel: Model<User>,// injects the Mongoose model associated with the User schema to interact with the User collection in MongoDB
     private readonly fileService: FileService,
+    private readonly jsxGeneratorService: JSXGeneratorService,
   ) {}
   async addOrUpdateComponents(userId: string,projectId:string, pageId:string , components: CreateComponentDto[]): Promise<any> {
     const user = await this.userModel.findById(userId);
@@ -45,35 +47,15 @@ constructor(
       
       await user.save();
      
-      const updatedJsxContent = this.generateJsxContent(page.components);
-      await this.fileService.uploadJsxFile(updatedJsxContent, page.jsxFilePath);
+      await this.jsxGeneratorService.generateAndSaveJsxFile(
+        page.components,
+        page.jsxFilePath
+        );
 
-      return page;
+    return page;
+  
   }
-  private generateJsxContent(components: any[]): string {
-    return `
-import React from 'react';
-
-const Page = () => (
-  <div style={{ display: 'flex', flexDirection: 'column' }}>
-    ${components.map(comp => this.generateComponent(comp)).join('\n    ')}
-  </div>
-);
-
-export default Page;
-    `;
-  }
-
-  private generateComponent(comp: any): string {
-    const props = this.generateProps(comp.properties);
-    return `<${comp.type} ${props} />`;
-  }
-
-  private generateProps(properties: any): string {
-    return Object.keys(properties || {})
-      .map(prop => `${prop}="${properties[prop]}"`)
-      .join(' ');
-  }
+  
       
   //   const existingComponent = page.components.id(componentId);
   //   if (existingComponent) {
@@ -113,11 +95,10 @@ export default Page;
 
     page.components.pull(componentId);
     await user.save();
-    const updatedJsxContent = this.generateJsxContent(page.components);
-    await this.fileService.uploadJsxFile(updatedJsxContent, page.jsxFilePath);
+   await this.jsxGeneratorService.generateAndSaveJsxFile(page.components, page.jsxFilePath);
 
-    return { message: 'Component deleted successfully' };
-}
+   return { message: 'Component deleted successfully' };
+ }
 async updateComponent(userId: string, projectId: string, pageId: string, componentId: string, updateComponentDto: UpdateComponentDto): Promise<any> {
   const user = await this.userModel.findById(userId);
   if (!user) {
