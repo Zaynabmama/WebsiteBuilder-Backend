@@ -7,7 +7,7 @@ export class JSXGeneratorService {
 
   async generateAndSaveJsxFile(components: any[], filename: string): Promise<void> {
     const jsxContent = this.generateJsxContent(components);
-    await this.fileService.uploadJsxFile(jsxContent, filename); // Ensure filename is the path
+    await this.fileService.uploadJsxFile(jsxContent, filename);
   }
 
   private generateJsxContent(components: any[]): string {
@@ -48,7 +48,7 @@ export default Page;
       return `style={${this.formatStyleObject(value)}}`;
     }
     if (typeof value === 'boolean') {
-      return value ? prop : '';  // For boolean props
+      return value ? prop : '';
     }
     return `${prop}="${this.escapeString(value)}"`;
   }
@@ -64,6 +64,6 @@ export default Page;
   }
 
   private escapeString(value: string): string {
-    return value.replace(/"/g, '\\"').replace(/\n/g, '\\n');  // Escape double quotes and newlines
+    return value.replace(/"/g, '\\"').replace(/\n/g, '\\n');
   }
 }

@@ -41,7 +41,7 @@ class Page {
     jsxFilePath: string;
 
     @Prop({ type: [Component], default: [] })
-    components: Types.DocumentArray<Component>; // Embedding Component schema
+    components: Types.DocumentArray<Component>;
 }
 
 @Schema({ timestamps: true })
