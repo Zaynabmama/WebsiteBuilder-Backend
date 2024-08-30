@@ -58,5 +58,40 @@ export class DeploymentService {
         project.deployment = { siteId, status: 'created', url };
         await user.save();
       }
+      async deploySite(userId: string, projectId: string): Promise<void> {
+        const user = await this.userModel.findById(userId);
+        const project = user.projects.id(projectId);
+        const siteId = project.deployment.siteId;
       
+        const apiUrl = `https://api.netlify.com/api/v1/sites/${siteId}/deploys`;
+        const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
+      
+        await axios.post(apiUrl, {}, {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+      
+        project.deployment.status = 'deployed';
+        await user.save();
+      }
+      
+      async checkDeploymentStatus(siteId: string): Promise<any> {
+        const apiUrl = `https://api.netlify.com/api/v1/sites/${siteId}/deploys`;
+        const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
+      
+        const response = await axios.get(apiUrl, {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        });
+      
+        return response.data;
+      }
+      async getJsxFilesForProject(userId: string, projectId: string): Promise<string[]> {
+        const user = await this.userModel.findById(userId);
+        const project = user.projects.id(projectId);
+        
+        return project.pages.map(page => page.jsxFilePath);
+      }
 }
