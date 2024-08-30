@@ -21,6 +21,8 @@ export class DeploymentService {
         const payload = {
         name: `user-site-${userId}-${projectId}`,
         };
+        console.log('Sending payload to Netlify:', payload);
+
         const response = await axios.post(apiUrl, payload, {
             headers: {
               Authorization: `Bearer ${apiKey}`,
