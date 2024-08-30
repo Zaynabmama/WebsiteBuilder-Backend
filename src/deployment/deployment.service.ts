@@ -29,6 +29,8 @@ export class DeploymentService {
         const siteId = response.data.id;
         console.log(`Site created with ID: ${siteId}`);
           
+        
+        await this.saveSiteIdToDeployment(userId, projectId, siteId);
         return siteId;  
       }
       async saveSiteIdToDeployment(userId: string, projectId: string, siteId: string): Promise<void> {
