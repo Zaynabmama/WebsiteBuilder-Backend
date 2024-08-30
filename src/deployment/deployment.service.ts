@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -14,39 +14,49 @@ export class DeploymentService {
     async createSiteForUser(userId: string, projectId: string): Promise<string> {
         const apiUrl = this.configService.get<string>('NETLIFY_API_URL');
         const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
-        console.log(`Netlify API URL: ${apiUrl}`);
-        console.log(`Netlify API Key: ${apiKey}`);
-
-       
+      
         const payload = {
-        name: `user-site-${userId}-${projectId}`,
+            name: `site-${userId.slice(0, 5)}-${projectId.slice(0, 5)}-${Date.now()}`,
         };
+      
         console.log('Sending payload to Netlify:', payload);
-
-        const response = await axios.post(apiUrl, payload, {
+      
+        try {
+          const response = await axios.post(apiUrl, payload, {
             headers: {
               Authorization: `Bearer ${apiKey}`,
             },
           });
-        const siteId = response.data.id;
-        console.log(`Site created with ID: ${siteId}`);
-          
+      
+          const siteId = response.data.id;
+          console.log(`Site created with ID: ${siteId}`);
+          const url = response.data.ssl_url || response.data.url;
+          console.log(`Site created with ID: ${siteId} and URL: ${url}`);
         
-        await this.saveSiteIdToDeployment(userId, projectId, siteId);
-        return siteId;  
+          // Save the siteId and url to the database
+          await this.saveSiteIdToDeployment(userId, projectId, siteId, url);
+        
+      
+          return siteId;
+        } catch (error) {
+          console.error('Error creating site on Netlify:', error.response?.data || error.message);
+          throw new InternalServerErrorException('Failed to create site on Netlify');
+        }
       }
-      async saveSiteIdToDeployment(userId: string, projectId: string, siteId: string): Promise<void> {
+      
+      async saveSiteIdToDeployment(userId: string, projectId: string, siteId: string, url: string): Promise<void> {
         const user = await this.userModel.findById(userId);
         if (!user) {
           throw new NotFoundException('User not found');
         }
-    
+      
         const project = user.projects.id(projectId);
         if (!project) {
           throw new NotFoundException('Project not found');
         }
-    
-        project.deployment = { siteId, status: 'created', url: '' };
+      
+        project.deployment = { siteId, status: 'created', url };
         await user.save();
       }
+      
 }
