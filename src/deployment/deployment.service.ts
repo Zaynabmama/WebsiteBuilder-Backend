@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import axios from 'axios';
@@ -7,14 +11,13 @@ import { User } from 'src/user/schemas/user.schema/user.schema';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as FormData from 'form-data';
-import { PageGeneratorService } from 'src/pagegenerate/pagegenerate.service';
+import { exec } from 'child_process';
 
 @Injectable()
 export class DeploymentService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly configService: ConfigService,
-    private readonly pageGeneratorService: PageGeneratorService
   ) {}
 
   async createSiteForUser(userId: string, projectId: string): Promise<string> {
@@ -44,8 +47,12 @@ export class DeploymentService {
     }
   }
 
-  // Save the created site ID and URL in the user's project
-  private async saveSiteIdToDeployment(userId: string, projectId: string, siteId: string, url: string): Promise<void> {
+  private async saveSiteIdToDeployment(
+    userId: string,
+    projectId: string,
+    siteId: string,
+    url: string,
+  ): Promise<void> {
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -60,8 +67,7 @@ export class DeploymentService {
     await user.save();
   }
 
-  // Main method to deploy the project: generate HTML, transpile JSX, and deploy
-  async deployProject(userId: string, projectId: string, projectName: string): Promise<void> {
+  async deployProject(userId: string, projectId: string): Promise<void> {
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -72,123 +78,91 @@ export class DeploymentService {
       throw new NotFoundException('Project not found');
     }
 
-    const siteId = project.deployment.siteId;
-    if (!siteId) {
-      throw new NotFoundException('No site ID found for deployment.');
+    const projectDirectory = path.resolve(process.cwd(), 'uploads', project.name);
+
+    if (!fs.existsSync(projectDirectory)) {
+      throw new NotFoundException(`Project directory not found: ${projectDirectory}`);
     }
 
-    // Ensure the project directory exists
-    const projectDirectory = path.resolve(process.cwd(), 'uploads', projectName);
-  if (!fs.existsSync(projectDirectory)) {
-    throw new NotFoundException(`Project directory not found: ${projectDirectory}`);
-  }
-    // Step 1: Generate HTML files from JSX
-    this.pageGeneratorService.generateHtmlFilesForPages(projectName);
+    console.log(`Project directory found at ${projectDirectory}`);
 
-    // Step 2: Transpile JSX files to JavaScript
-    await this.transpileJSXFiles(projectDirectory);
+    // Build the user's project
+    await this.buildUserProject(projectDirectory);
 
-    // Step 3: Deploy files to Netlify
-    await this.deployStaticFilesToNetlify(siteId, projectDirectory);
+    // Deploy the built static file to Netlify
+    const buildFile = path.join(projectDirectory, 'build', 'pleasework.js');
+    await this.deploySingleFileToNetlify(project.deployment.siteId, buildFile);
 
-    // Update deployment status
     project.deployment.status = 'deployed';
     await user.save();
   }
 
-  // Helper method to transpile JSX files to JavaScript using Babel
-  private async transpileJSXFiles(directory: string): Promise<void> {
-    const exec = require('child_process').exec;
+  private async buildUserProject(directory: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      exec(
-        `npx babel ${directory} --out-dir ${directory} --extensions ".jsx" --presets @babel/preset-react`,
-        (error: any, stdout: string, stderr: string) => {
-          if (error) {
-            console.error(`Error transpiling JSX files: ${stderr}`);
-            reject(new InternalServerErrorException('Failed to transpile JSX files'));
+      exec('npm run build', { cwd: directory }, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Build failed: ${stderr}`);
+          reject(new InternalServerErrorException('Failed to build the user project'));
+        } else {
+          console.log(`Build output: ${stdout}`);
+          const buildPath = path.join(directory, 'build');
+          if (!fs.existsSync(buildPath)) {
+            console.error(`Build directory not found at ${buildPath}`);
+            reject(new InternalServerErrorException('Build directory not found after build process.'));
           } else {
-            console.log(`Transpiled JSX files: ${stdout}`);
+            console.log(`Build directory found at ${buildPath}`);
             resolve();
           }
         }
-      );
+      });
     });
   }
 
-  // Deploy static files (HTML, JS) to Netlify
-  private async deployStaticFilesToNetlify(siteId: string, projectDirectory: string): Promise<void> {
+  private async deploySingleFileToNetlify(siteId: string, filePath: string): Promise<void> {
     const apiUrl = `https://api.netlify.com/api/v1/sites/${siteId}/deploys`;
     const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
-
-    const form = new FormData();
-    const files = fs.readdirSync(projectDirectory);
 
     try {
-      // Append each file as a stream to the form data
-      files.forEach(file => {
-        const filePath = path.join(projectDirectory, file);
-        form.append(`files[${file}]`, fs.createReadStream(filePath), file);
-      });
+        const fileStream = fs.createReadStream(filePath);
+        const fileName = path.basename(filePath);
 
-      const headers = {
-        Authorization: `Bearer ${apiKey}`,
-        ...form.getHeaders(), // Include the correct headers for multipart form data
-      };
+        console.log(`Uploading file: ${fileName}`);
 
-      const response = await axios.post(apiUrl, form, { headers });
+        const response = await axios.post(apiUrl, fileStream, {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': `attachment; filename="${fileName}"`,
+            },
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
+        });
 
-      console.log('Deployment to Netlify successful.');
+        console.log('Deployment to Netlify successful:', response.data);
     } catch (error) {
-      console.error('Error deploying to Netlify:', error.response?.data || error.message);
-      throw new InternalServerErrorException('Failed to deploy site on Netlify');
+        console.error('Error deploying to Netlify:', error.response?.data || error.message);
+        throw new InternalServerErrorException('Failed to deploy site on Netlify');
     }
-  }
+}
 
-  // Redeploy the existing site on Netlify
-  async redeploySite(userId: string, projectId: string): Promise<void> {
-    const user = await this.userModel.findById(userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
-    const project = user.projects.id(projectId);
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
-
-    const siteId = project.deployment.siteId;
-    if (!siteId) {
-      throw new NotFoundException('No site ID found for redeployment.');
-    }
-
-    const apiUrl = `https://api.netlify.com/api/v1/sites/${siteId}/deploys`;
-    const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
-
-    await axios.post(apiUrl, {}, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
-
-    project.deployment.status = 'deployed';
-    await user.save();
-  }
-
-  // Check the deployment status on Netlify
   async checkDeploymentStatus(siteId: string): Promise<any> {
     const apiUrl = `https://api.netlify.com/api/v1/sites/${siteId}/deploys`;
     const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
 
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-      },
-    });
-
-    return response.data;
+    try {
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error checking deployment status:', error.response?.data || error.message);
+      throw new InternalServerErrorException('Failed to check deployment status on Netlify');
+    }
   }
 
-  // Retrieve JSX files for a given project
   async getJsxFilesForProject(userId: string, projectId: string): Promise<string[]> {
     const user = await this.userModel.findById(userId);
     if (!user) {
@@ -200,6 +174,6 @@ export class DeploymentService {
       throw new NotFoundException('Project not found');
     }
 
-    return project.pages.map(page => page.jsxFilePath);
+    return project.pages.map((page) => page.jsxFilePath);
   }
 }

@@ -16,7 +16,7 @@ import React from 'react';
 
 const Page = () => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div>
 ${components.map(comp => this.generateComponent(comp, 4)).join('\n')}
     </div>
   );

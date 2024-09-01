@@ -7,11 +7,6 @@ export class PageGeneratorService {
   generateHtmlFilesForPages(projectName: string): void {
     const projectDirectory = path.resolve(process.cwd(), 'uploads', projectName);
 
-    // Ensure the directory exists
-    if (!fs.existsSync(projectDirectory)) {
-      throw new NotFoundException(`Project directory not found: ${projectDirectory}`);
-    }
-
     try {
       const files = fs.readdirSync(projectDirectory);
 

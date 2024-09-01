@@ -1,39 +1,42 @@
-import { Controller, Post, Param, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Param,
+  Get,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { DeploymentService } from './deployment.service';
+import { Request } from 'express';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('deployment')
 export class DeploymentController {
   constructor(private readonly deploymentService: DeploymentService) {}
 
-  // Endpoint to create a new site on Netlify
-  @Post('create-site/:userId/:projectId')
+  // Create a new site on Netlify for the user's project
+  @Post('create-site/:projectId')
   async createSite(
-    @Param('userId') userId: string,
+    @Req() req,
     @Param('projectId') projectId: string,
   ): Promise<string> {
+    const userId = req.user.userId; // Extract userId from JWT token
     return await this.deploymentService.createSiteForUser(userId, projectId);
   }
 
-  // Endpoint to deploy the project (generate HTML, transpile JSX, deploy)
-  @Post('deploy/:userId/:projectId/:projectName')
+  // Deploy the user's project by building it and deploying to Netlify
+  @Post('deploy/:projectId/:projectName')
   async deployProject(
-    @Param('userId') userId: string,
+    @Req() req,
     @Param('projectId') projectId: string,
     @Param('projectName') projectName: string,
   ): Promise<void> {
-    await this.deploymentService.deployProject(userId, projectId, projectName);
+    const userId = req.user.userId; // Extract userId from JWT token
+    await this.deploymentService.deployProject(userId, projectId);
   }
 
-  // Endpoint to manually trigger a redeployment on Netlify
-  @Post('redeploy/:userId/:projectId')
-  async redeploySite(
-    @Param('userId') userId: string,
-    @Param('projectId') projectId: string,
-  ): Promise<void> {
-    await this.deploymentService.redeploySite(userId, projectId);
-  }
-
-  // Endpoint to check the deployment status on Netlify
+  // Check the deployment status on Netlify for a specific site
   @Get('status/:siteId')
   async checkDeploymentStatus(
     @Param('siteId') siteId: string,
@@ -41,12 +44,13 @@ export class DeploymentController {
     return await this.deploymentService.checkDeploymentStatus(siteId);
   }
 
-  // Endpoint to retrieve JSX files for a given project
-  @Get('jsx-files/:userId/:projectId')
+  // Retrieve JSX files associated with a specific user's project
+  @Get('jsx-files/:projectId')
   async getJsxFiles(
-    @Param('userId') userId: string,
+    @Req() req,
     @Param('projectId') projectId: string,
   ): Promise<string[]> {
+    const userId = req.user.userId; // Extract userId from JWT token
     return await this.deploymentService.getJsxFilesForProject(userId, projectId);
   }
 }
