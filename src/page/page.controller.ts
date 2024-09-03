@@ -15,30 +15,30 @@ export class PageController {
     return this.pageService.createPage(userId, projectId, createPageDto);
   
   }
-  @Get()
-  async listPages(
-    @Req() req,
-    @Param('projectId') projectId: string,
-  ) {
-    const userId = req.user.userId;
-    return this.pageService.listPages(userId, projectId);
-  }
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete(':pageId')
-  async deletePage(
-    @Req() req,
-    @Param('projectId') projectId: string,
-    @Param('pageId') pageId: string,
-  ) {
-    const userId = req.user.userId;
-    await this.pageService.deletePage(userId, projectId, pageId);
-  }
+   @Get()
+   async listPages(
+     @Req() req,
+     @Param('projectId') projectId: string,
+   ) {
+     const userId = req.user.userId;
+     return this.pageService.listPages(userId, projectId);
+   }
+   @HttpCode(HttpStatus.NO_CONTENT)
+   @Delete(':pageId')
+   async deletePage(
+     @Req() req,
+     @Param('projectId') projectId: string,
+     @Param('pageId') pageId: string,
+   ) {
+     const userId = req.user.userId;
+     await this.pageService.deletePage(userId, projectId, pageId);
+   }
 
-  @Get(':pageId')
-  async getPageById(@Req() req, @Param('projectId') projectId: string, @Param('pageId') pageId: string) {
-    const userId = req.user.userId;  //extract userId from auth request
-    return this.pageService.getPageById(userId, projectId,pageId);
-  }
+   @Get(':pageId')
+   async getPageById(@Req() req, @Param('projectId') projectId: string, @Param('pageId') pageId: string) {
+     const userId = req.user.userId;  //extract userId from auth request
+     return this.pageService.getPageById(userId, projectId,pageId);
+   }
 
 
-}
+ }
