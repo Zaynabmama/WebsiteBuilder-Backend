@@ -15,28 +15,27 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class DeploymentController {
   constructor(private readonly deploymentService: DeploymentService) {}
 
-  // Create a new site on Netlify for the user's project
+  
   @Post('create-site/:projectId')
   async createSite(
     @Req() req,
     @Param('projectId') projectId: string,
   ): Promise<string> {
-    const userId = req.user.userId; // Extract userId from JWT token
+    const userId = req.user.userId; 
     return await this.deploymentService.createSiteForUser(userId, projectId);
   }
 
-  // Deploy the user's project by building it and deploying to Netlify
   @Post('deploy/:projectId/:projectName')
   async deployProject(
     @Req() req,
     @Param('projectId') projectId: string,
     @Param('projectName') projectName: string,
   ): Promise<void> {
-    const userId = req.user.userId; // Extract userId from JWT token
+    const userId = req.user.userId; 
     await this.deploymentService.deployProject(userId, projectId);
   }
 
-  // Check the deployment status on Netlify for a specific site
+  
   @Get('status/:siteId')
   async checkDeploymentStatus(
     @Param('siteId') siteId: string,
@@ -44,13 +43,12 @@ export class DeploymentController {
     return await this.deploymentService.checkDeploymentStatus(siteId);
   }
 
-  // Retrieve JSX files associated with a specific user's project
   @Get('jsx-files/:projectId')
   async getJsxFiles(
     @Req() req,
     @Param('projectId') projectId: string,
   ): Promise<string[]> {
-    const userId = req.user.userId; // Extract userId from JWT token
+    const userId = req.user.userId; 
     return await this.deploymentService.getJsxFilesForProject(userId, projectId);
   }
 }

@@ -63,18 +63,16 @@ export class PageService {
     });
     project.pages.push(newPage);
 
-    // const jsxContent = this.generateJsxContent([]);
+    // const jsxContent = this.jsxGeneratorService.generateJsxContent([]);
 
-    // await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
+    //  await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
     // await user.save();
 
-    
-    // return newPage;
+        await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
  
     await user.save();
 
-    // Generate and save the JSX file
-    await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
+
 
     return newPage;
   }

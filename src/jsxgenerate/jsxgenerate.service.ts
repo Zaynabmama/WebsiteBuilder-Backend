@@ -10,7 +10,7 @@ export class JSXGeneratorService {
     await this.fileService.uploadJsxFile(jsxContent, filename);
   }
 
-  private generateJsxContent(components: any[]): string {
+   generateJsxContent(components: any[]): string {
     return `
 import React from 'react';
 
