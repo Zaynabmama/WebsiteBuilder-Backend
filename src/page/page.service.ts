@@ -63,9 +63,9 @@ export class PageService {
     });
     project.pages.push(newPage);
 
-    // const jsxContent = this.jsxGeneratorService.generateJsxContent([]);
+     const jsxContent = this.jsxGeneratorService.generateJsxContent([]);
 
-    //  await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
+     await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
     // await user.save();
 
         await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
