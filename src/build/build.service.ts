@@ -8,7 +8,6 @@ export class BuildService {
     return new Promise((resolve, reject) => {
       if (!projectName) {
         console.error('Project name is required');
-        reject('Project name is required');
         return;
       }
 
@@ -17,23 +16,27 @@ export class BuildService {
 
       console.log(`Project path resolved to: ${projectPath}`);
 
-      exec(`npm run build`, { cwd: projectPath, shell: 'C:\\Program Files\\Git\\bin\\bash.exe' }, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error occurred during build: ${error.message}`);
-          console.error(`Error details: ${error.stack}`);
-          reject(`Build failed: ${error.message}`);
-          return;
+
+      exec(
+        `npm run build`, 
+        { cwd: projectPath, shell: 'C:\\Program Files\\Git\\bin\\bash.exe' }, 
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Error occurred during build: ${error.message}`);
+            console.error(`Error details: ${error.stack}`);
+            reject(`Build failed: ${error.message}`);
+            return;
+          }
+        
+          if (stderr) {
+            console.error(`Standard error output from build: ${stderr}`);
+            
+          }
+        
+          console.log(`Standard output from build: ${stdout}`);
+          resolve(stdout);
         }
-      
-        if (stderr) {
-          console.error(`Standard error output from build: ${stderr}`);
-        }
-      
-        console.log(`Standard output from build: ${stdout}`);
-        resolve(stdout);
-      });
-      
-      
+      );
     });
   }
 }

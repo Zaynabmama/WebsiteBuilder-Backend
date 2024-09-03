@@ -54,9 +54,6 @@ export class PageService {
         throw new NotFoundException('Project not found');
     }
 
-    // const projectDir = project.name.replace(/\s+/g, '-').toLowerCase();
-    // const pageDir = createPageDto.name.replace(/\s+/g, '-').toLowerCase();
-    // const jsxFilePath = `${projectDir}/${pageDir}.jsx`;
     const projectDir = project.name.replace(/\s+/g, '-').toLowerCase();
     const projectPath = join(__dirname, '..', '..', 'uploads', projectDir);
     const srcPath = join(projectPath, 'src');
@@ -66,11 +63,11 @@ export class PageService {
     console.log('Project Path:', projectPath);
     console.log('JSX File Path:', jsxFilePath);
 
-    // Ensure the project and src folders are created
+
     await this.ensureProjectFolder(projectPath);
     await this.ensureProjectFolder(srcPath);
 
-    // Create or update the package.json file
+
     await this.createOrUpdatePackageJson(projectPath, project.name);
 
     const newPage = project.pages.create({
@@ -119,7 +116,7 @@ export class PageService {
       babel: {
         presets: ["@babel/preset-env", "@babel/preset-react"]
       }
-    }, null, 2); // Formatting with indentation
+    }, null, 2); 
 
     return new Promise((resolve, reject) => {
       writeFile(packageJsonPath, packageJsonContent, (err) => {
