@@ -12,12 +12,12 @@ import { v4 as uuidv4 } from 'uuid';
             storage: diskStorage({
                 destination: (req, file, cb) => {
                   const uploadPath = path.join(__dirname, '..', '..', 'uploads');
-                  cb(null, uploadPath); // Set the upload path
+                  cb(null, uploadPath);
                 },
                 filename: (req, file, cb) => {
                   const fileExtension = path.extname(file.originalname);
-                  const filename = `${uuidv4()}${fileExtension}`; // Generate a unique filename
-                  cb(null, filename); // Set the final filename
+                  const filename = `${uuidv4()}${fileExtension}`;
+                  cb(null, filename);
                 },
               }),
         }),
