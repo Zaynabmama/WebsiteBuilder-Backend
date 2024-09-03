@@ -68,16 +68,24 @@ export class PageService {
     // await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
     // await user.save();
 
-    
-    // return newPage;
- 
-    await user.save();
+  //   await user.save();
 
-    // Generate and save the JSX file
+  //   await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
+  //   // return newPage;
+ 
+    
+  //   // Generate and save the JSX file
+
+  //   return newPage;
+  // } console.log(`Attempting to generate and save JSX file at: ${jsxFilePath}`); // Debugging info
+  await user.save();
+
     await this.jsxGeneratorService.generateAndSaveJsxFile(newPage.components, jsxFilePath);
 
+    console.log(`JSX file successfully created at: ${jsxFilePath}`); // Debugging info
+
     return newPage;
-  }
+}
 
 
       async listPages(userId: string, projectId: string): Promise<any[]> {
