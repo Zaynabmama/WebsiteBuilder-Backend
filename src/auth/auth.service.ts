@@ -31,10 +31,15 @@ export class AuthService {
     //     };
     //   }
     async login(user: any) {
-        const payload = { email: user.email, sub: user._id, role: user.role };
+        const payload = { email: user.email, sub: user._id, role: user.role,name:user.name };
         console.log('JWT Payload:', payload);
         return {
           access_token: this.jwtService.sign(payload),
+          user: {
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
         };
       }
       
