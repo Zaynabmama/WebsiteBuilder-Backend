@@ -50,10 +50,4 @@ export class ComponentController {
     const userId = req.user.userId;
     return this.componentService.getComponents(userId, projectId, pageId);
     }
-
-
-
-
-
-
 }
