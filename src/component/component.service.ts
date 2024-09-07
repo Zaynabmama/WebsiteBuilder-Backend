@@ -11,7 +11,7 @@ import { JSXGeneratorService } from 'src/jsxgenerate/jsxgenerate.service';
 export class ComponentService {
 constructor(
     @InjectModel(User.name) private userModel: Model<User>,// injects the Mongoose model associated with the User schema to interact with the User collection in MongoDB
-    private readonly fileService: FileService,
+   
     private readonly jsxGeneratorService: JSXGeneratorService,
   ) {}
 
@@ -28,7 +28,12 @@ constructor(
     return { user, project, page }; 
   }
   
-  async addOrUpdateComponents(userId: string,projectId:string, pageId:string , components: CreateComponentDto[]): Promise<any> {
+  async addOrUpdateComponents(
+    userId: string,
+    projectId:string,
+     pageId:string ,
+     components: CreateComponentDto[],
+     ): Promise<any> {
       const { user, page } = await this.findPage(userId, projectId, pageId);
       type ComponentWithOptionalId = CreateComponentDto & { _id?: Types.ObjectId };
       components.forEach((componentDto: ComponentWithOptionalId) => {
@@ -53,30 +58,17 @@ constructor(
      
       await this.jsxGeneratorService.generateAndSaveJsxFile(
         page.components,
-        page.jsxFilePath
+        page.jsxFilePath,
+        page.name
         );
 
-    return page;
+      return page; 
   
       }
       catch (error) {
       throw new InternalServerErrorException('Could not save changes or generate JSX');
   }
 }
-      
-  //   const existingComponent = page.components.id(componentId);
-  //   if (existingComponent) {
-  //       Object.assign(existingComponent, componentId);  // Update the component
-  //     }
-  //   else {
-  //       const newComponent = page.components.create(createComponentDto);
-  //       page.components.push(newComponent);  // Add new component
-  //     }  
-      
-  //   // page.components.push(newComponent);
-  //    await user.save();
-
-  //    return page;
 
    
   async deleteComponent(userId: string, projectId: string, pageId: string, componentId: string): Promise<any> {
@@ -103,7 +95,7 @@ constructor(
 
     page.components.pull(componentId);
     await user.save();
-   await this.jsxGeneratorService.generateAndSaveJsxFile(page.components, page.jsxFilePath);
+   await this.jsxGeneratorService.generateAndSaveJsxFile(page.components, page.jsxFilePath,page.name);
 
    return { message: 'Component deleted successfully' };
  }
