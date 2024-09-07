@@ -24,6 +24,10 @@ export class ProjectService {
       throw new BadRequestException('Project with this name already exists');
     }
     const newProject=user.projects.create(createProjectDto as any);
+    // const newProject = {
+    //   ...createProjectDto,
+    //   pages: [],
+    // };
     user.projects.push(newProject);
     await user.save();
     
@@ -36,6 +40,15 @@ export class ProjectService {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return user.projects;
+  }
+  async getProject(userId: string, projectName: string): Promise<any> {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const project = user.projects.find(project => project.name === projectName);
+    if (!project) throw new NotFoundException('Project not found');
+
+    return project;
   }
   async getProjectById(userId: string, projectId: string): Promise<any> {
     const user = await this.userModel.findById(userId);
