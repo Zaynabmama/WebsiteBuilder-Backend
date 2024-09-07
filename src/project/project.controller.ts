@@ -25,6 +25,12 @@ export class ProjectController {
     const userId = req.user.userId;  //extract userId from auth request
     return this.projectService.getProjectById(userId, projectId);
   }
+  @Get(':projectName')
+  async getProject(@Req() req,@Param('projectName') projectName: string) {
+    const userId = req.user.userId;
+    return this.projectService.getProject(userId, projectName);
+  }
+
   @Delete(':projectId')
   @HttpCode(HttpStatus.NO_CONTENT) // 204
   async deleteProjectById(@Req() req, @Param('projectId') projectId: string): Promise<void> {
