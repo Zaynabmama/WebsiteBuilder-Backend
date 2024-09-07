@@ -5,7 +5,7 @@ import { FileService } from '../file/file.service';
 export class JSXGeneratorService {
   constructor(private readonly fileService: FileService) {}
 
-  async generateAndSaveJsxFile(components: any[], filename: string , pageName: string): Promise<void> {
+  async generateAndSaveJsxFile(components: any[], jsxFilePath: string , pageName: string): Promise<void> {
     const jsxContent = this.generateJsxContent(components ,pageName);
     await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
   }
