@@ -5,65 +5,49 @@ import { FileService } from '../file/file.service';
 export class JSXGeneratorService {
   constructor(private readonly fileService: FileService) {}
 
-  async generateAndSaveJsxFile(components: any[], filename: string): Promise<void> {
-    const jsxContent = this.generateJsxContent(components);
-    await this.fileService.uploadJsxFile(jsxContent, filename);
+  async generateAndSaveJsxFile(components: any[], filename: string , pageName: string): Promise<void> {
+    const jsxContent = this.generateJsxContent(components ,pageName);
+    await this.fileService.uploadJsxFile(jsxContent, jsxFilePath);
   }
 
-   generateJsxContent(components: any[]): string {
+   generateJsxContent(components: any[] , pageName: string): string {
+    const usedComponents = this.extractUsedComponents(components);
+    const componentBody = components.map(comp => this.generateComponent(comp)).join('\n');
+    
     return `
-import React from 'react';
+      import React from 'react';
+      
 
-const Page = () => {
-  return (
-    <div>
-${components.map(comp => this.generateComponent(comp, 4)).join('\n')}
-    </div>
-  );
-};
+      const ${pageName} = () => (
+        <div>
+          ${componentBody}
+        </div>
+      );
 
-export default Page;
-    `.trim(); 
+      export default ${pageName};
+    `.trim();
+  }
+  private extractUsedComponents(components: any[]): string[] {
+    const componentNames = components.map(comp => comp.type);
+    return Array.from(new Set(componentNames));
   }
 
-  private generateComponent(comp: any, indentLevel: number = 0): string {
-    const indent = ' '.repeat(indentLevel * 2);
+  private generateComponent(comp: any): string {
     const props = this.generateProps(comp.properties);
     const text = comp.properties.text || '';
 
     return text
-      ? `${indent}<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`
-      : `${indent}<${comp.type}${props ? ' ' + props : ''} />`;
+      ? `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`
+      : `<${comp.type}${props ? ' ' + props : ''} />`;
   }
 
   private generateProps(properties: any): string {
     return Object.keys(properties || {})
       .filter(prop => prop !== 'text')
-      .map(prop => this.generatePropString(prop, properties[prop]))
+      .map(prop => `${prop}="${properties[prop]}"`)
       .join(' ');
   }
-
-  private generatePropString(prop: string, value: any): string {
-    if (prop === 'style') {
-      return `style={${this.formatStyleObject(value)}}`;
-    }
-    if (typeof value === 'boolean') {
-      return value ? prop : '';
-    }
-    return `${prop}="${this.escapeString(value)}"`;
-  }
-
-  private formatStyleObject(styleObject: any): string {
-    return `{${Object.entries(styleObject)
-      .map(([key, value]) => `${this.camelCaseToJsx(key)}: '${value}'`)
-      .join(', ')}}`;
-  }
-
-  private camelCaseToJsx(key: string): string {
-    return key.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-  }
-
-  private escapeString(value: string): string {
-    return value.replace(/"/g, '\\"').replace(/\n/g, '\\n');
-  }
 }
+
+
+    
