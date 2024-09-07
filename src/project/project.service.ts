@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema/user.schema';
@@ -16,6 +16,12 @@ export class ProjectService {
     
     if (!user) {
         throw new NotFoundException('User not found');
+    }
+    const existingProject = user.projects.find(
+      project => project.name === createProjectDto.name
+    );
+    if (existingProject) {
+      throw new BadRequestException('Project with this name already exists');
     }
     const newProject=user.projects.create(createProjectDto as any);
     user.projects.push(newProject);
