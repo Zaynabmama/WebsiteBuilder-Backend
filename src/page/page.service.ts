@@ -95,7 +95,7 @@ export default ${pageName};
         project.pages.pull(pageId);
         await user.save();
       // Delete the JSX file
-      await this.fileService.deleteJsxFile(page.jsxFilePath);
+      // await this.fileService.deleteJsxFile(page.jsxFilePath);
       }
       async getPageById(userId: string, projectId: string, pageId:string): Promise<any> {
         const user = await this.userModel.findById(userId);
