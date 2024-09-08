@@ -36,11 +36,14 @@ export class JSXGeneratorService {
     const props = this.generateProps(comp.properties);
     const text = comp.properties.text || '';
     const selfClosingTags = ['img', 'input', 'br', 'hr'];
+    const style = this.generateStyle(comp.properties); 
     if (selfClosingTags.includes(comp.type.toLowerCase())) {
-      return `<${comp.type}${props ? ' ' + props : ''} />`;
+      // return `<${comp.type}${props ? ' ' + props : ''} />`;
+      return `<${comp.type} style={${style}} />`;
     }
 
-    return `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`;
+    // return `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`;
+    return `<${comp.type} style={${style}}>${text}</${comp.type}>`;
   }
 
 
@@ -55,7 +58,28 @@ export class JSXGeneratorService {
       .map(prop => `${prop}="${properties[prop]}"`)
       .join(' ');
   }
+  private generateStyle(properties: any): string {
+    const styleProperties: any = {};
+    
+    if (properties.color) {
+      styleProperties.color = properties.color;
+    }
+    if (properties.backgroundColor) {
+      styleProperties.backgroundColor = properties.backgroundColor;
+    }
+    if (properties.fontSize) {
+      styleProperties.fontSize = properties.fontSize;
+    }
+    if (properties.width) {
+      styleProperties.width = properties.width;
+    }
+    if (properties.height) {
+      styleProperties.height = properties.height;
+    }
+    return JSON.stringify(styleProperties);
+  }
 }
+
 
 
     
