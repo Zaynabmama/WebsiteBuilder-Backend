@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema/user.schema';
@@ -7,6 +7,7 @@ import { FileService } from 'src/file/file.service';
 import { JSXGeneratorService } from '../jsxgenerate/jsxgenerate.service';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
+import { exec } from 'child_process';
 @Injectable()
 export class PageService {
     constructor(
@@ -126,4 +127,59 @@ export default ${pageName};
       //   await this.componentService.updateJsxFile(page._id); // Update JSX file
       //   return page;
         }
-}
+        async previewPage(userId: string, projectId: string, pageId: string): Promise<{ previewUrl: string }> {
+          const user = await this.userModel.findById(userId);
+          if (!user) throw new NotFoundException('User not found');
+      
+          const project = user.projects.id(projectId);
+          if (!project) throw new NotFoundException('Project not found');
+      
+          const page = project.pages.id(pageId);
+          if (!page) throw new NotFoundException('Page not found');
+      
+          console.log(`Starting React server for ${project.name}`);
+          const previewUrl = await this.startReactServer( project.name);
+      
+          console.log(`Generated preview URL: ${previewUrl}/${project.name}/${page.name}`);
+          return { previewUrl: `${previewUrl}/${project.name}/${page.name}` };
+        }
+      
+        private async startReactServer( projectName: string): Promise<string> {
+          const reactAppPath = join(__dirname, '..', '..', 'projects', projectName); 
+          console.log(`Running npm install in ${reactAppPath}`);
+          await this.runCommand(`npm install --prefix ${reactAppPath}`);  
+          const port = 4000; 
+          console.log(`Starting React server for ${projectName} on port ${port}`);
+      
+         
+          const command = `npm run start --prefix ${reactAppPath} -- -p ${port}`;
+      
+          
+          return new Promise((resolve, reject) => {
+            exec(command, (err, stdout, stderr) => {
+              if (err) {
+                console.error(`Failed to start React app: ${err.message}`);
+                reject(err);
+              } else {
+                console.log(`React app started: ${stdout}`);
+                resolve(`http://localhost:${port}`);
+              }
+            });
+          });
+        }
+      
+       
+        private runCommand(command: string): Promise<void> {
+          return new Promise((resolve, reject) => {
+            exec(command, (err, stdout, stderr) => {
+              if (err) {
+                console.error(`Error running command: ${command}`, err);
+                reject(err);
+              } else {
+                console.log(`Command output: ${stdout}`);
+                resolve();
+              }
+            });
+          });
+        }
+      }
