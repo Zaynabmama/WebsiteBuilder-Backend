@@ -5,7 +5,7 @@ import { promises as fsPromises } from 'fs';
 
 @Injectable()
 export class FileService {
-  private async ensureDirectoryExists(filePath: string): Promise<void> {
+   async ensureDirectoryExists(filePath: string): Promise<void> {
     const dir = dirname(filePath);
     return new Promise((resolve, reject) => {
       mkdir(dir, { recursive: true }, (err) => {

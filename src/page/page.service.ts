@@ -29,9 +29,10 @@ export class PageService {
     }
 
     const pageName = createPageDto.name.replace(/\s+/g, '-').toLowerCase();
-    const pageFilePath = join(__dirname, '..', '..', 'projects', user.name, project.name, 'src', 'pages', `${pageName}.jsx`);
-
-
+    // const pageFilePath = join(__dirname, '..', '..', 'projects', user.name, project.name, 'src', 'pages', `${pageName}.jsx`);
+    const pageFilePath = join(__dirname, '..', '..', 'projects', project.name, 'src', 'pages', `${pageName}.jsx`);
+    await this.fileService.ensureDirectoryExists(pageFilePath);
+    
 
 
     const newPage = project.pages.create({
@@ -59,7 +60,7 @@ const ${pageName} = () => (
 
 export default ${pageName};
     `;
-    await writeFile(filePath, content);
+    await this.fileService.uploadJsxFile(content, filePath);
   }
 
       async listPages(userId: string, projectId: string): Promise<any[]> {
