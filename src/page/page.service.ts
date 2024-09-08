@@ -140,8 +140,8 @@ export default ${pageName};
           console.log(`Starting React server for ${project.name}`);
           const previewUrl = await this.startReactServer( project.name);
       
-          console.log(`Generated preview URL: ${previewUrl}/${project.name}/${page.name}`);
-          return { previewUrl: `${previewUrl}/${project.name}/${page.name}` };
+          console.log(`Generated preview URL: ${previewUrl}/${page.name}`);
+          return { previewUrl: `${previewUrl}/${page.name}` };
         }
       
         private async startReactServer( projectName: string): Promise<string> {
@@ -152,8 +152,7 @@ export default ${pageName};
           console.log(`Starting React server for ${projectName} on port ${port}`);
       
          
-          const command = `npm run start --prefix ${reactAppPath} -- -p ${port}`;
-      
+          const command = `cross-env PORT=${port} npm run start --prefix ${reactAppPath}`;
           
           return new Promise((resolve, reject) => {
             exec(command, (err, stdout, stderr) => {

@@ -57,7 +57,7 @@ export class PageController {
    // Optional: Return the content of the page for dynamic loading
    @Get(':pageId/content')
    async getPageContent(
-     @Req() req,
+     @Req() req: any,
      @Param('projectId') projectId: string,
      @Param('pageId') pageId: string
    ): Promise<any> {
