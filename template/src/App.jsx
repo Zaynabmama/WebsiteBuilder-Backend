@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-
 const importAllPages = (context) => {
   const pages = {};
   context.keys().forEach((key) => {
@@ -10,7 +9,6 @@ const importAllPages = (context) => {
   });
   return pages;
 };
-
 
 const pages = importAllPages(require.context('./pages', false, /\.jsx$/));
 
@@ -21,8 +19,8 @@ function App() {
         {Object.keys(pages).map((pageName) => (
           <Route
             key={pageName}
-            path={/${pageName}}
-            element={React.createElement(pages[pageName])}
+            path={`/${pageName}`} 
+            element={React.createElement(pages[pageName])} 
           />
         ))}
       </Routes>
