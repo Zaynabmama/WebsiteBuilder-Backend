@@ -35,11 +35,19 @@ export class JSXGeneratorService {
   private generateComponent(comp: any): string {
     const props = this.generateProps(comp.properties);
     const text = comp.properties.text || '';
+    const selfClosingTags = ['img', 'input', 'br', 'hr'];
+    if (selfClosingTags.includes(comp.type.toLowerCase())) {
+      return `<${comp.type}${props ? ' ' + props : ''} />`;
+    }
 
-    return text
-      ? `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`
-      : `<${comp.type}${props ? ' ' + props : ''} />`;
+    return `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`;
   }
+
+
+  //   return text
+  //     ? `<${comp.type}${props ? ' ' + props : ''}>${text}</${comp.type}>`
+  //     : `<${comp.type}${props ? ' ' + props : ''} />`;
+  // }
 
   private generateProps(properties: any): string {
     return Object.keys(properties || {})
