@@ -61,24 +61,17 @@ export class JSXGeneratorService {
   private generateStyle(properties: any): string {
     const styleProperties: any = {};
     
-    if (properties.color) {
-      styleProperties.color = properties.color;
-    }
-    if (properties.backgroundColor) {
-      styleProperties.backgroundColor = properties.backgroundColor;
-    }
-    if (properties.fontSize) {
-      styleProperties.fontSize = properties.fontSize;
-    }
-    if (properties.width) {
-      styleProperties.width = properties.width;
-    }
-    if (properties.height) {
-      styleProperties.height = properties.height;
-    }
-    return JSON.stringify(styleProperties);
-  }
-}
+    if (properties.color) styleProperties.color = properties.color;
+    if (properties.backgroundColor) styleProperties.backgroundColor = properties.backgroundColor;
+    if (properties.fontSize) styleProperties.fontSize = properties.fontSize;
+    if (properties.width) styleProperties.width = properties.width;
+    if (properties.height) styleProperties.height = properties.height;
+    if (properties.padding) styleProperties.padding = properties.padding;
+    if (properties.justifyContent) styleProperties.justifyContent = properties.justifyContent;
+    if (properties.alignItems) styleProperties.alignItems = properties.alignItems;
+    
+    return JSON.stringify(styleProperties).replace(/"([^"]+)":/g, '$1:');
+  }}
 
 
 
