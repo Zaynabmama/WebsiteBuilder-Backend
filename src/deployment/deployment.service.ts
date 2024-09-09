@@ -95,6 +95,32 @@ export class DeploymentService {
     });
   }
 
+  async deployToNetlify(siteId: string, buildDir: string): Promise<string> {
+    const files = await this.getFilesFromDirectory(buildDir);
+    const apiUrl = this.configService.get<string>('NETLIFY_API_URL');
+    const apiKey = this.configService.get<string>('NETLIFY_API_KEY');
+
+    try {
+      const response = await axios.post(
+        `https://api.netlify.com/api/v1/sites/${siteId}/deploys`,
+        { files },
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      const liveUrl = response.data.deploy_ssl_url || response.data.url;
+      console.log('Deployment successful:', liveUrl);
+
+      return liveUrl;
+    } catch (error) {
+      console.error('Error during deployment:', error.response?.data || error.message);
+      throw new Error('Deployment failed');
+    }
+  }
+
 
   private async getFilesFromDirectory(buildDir: string): Promise<{ path: string; content: string }[]> {
     const files = [];
