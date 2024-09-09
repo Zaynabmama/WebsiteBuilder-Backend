@@ -95,4 +95,34 @@ export class DeploymentService {
     });
   }
 
+
+  private async getFilesFromDirectory(buildDir: string): Promise<{ path: string; content: string }[]> {
+    const files = [];
+    const directoryPath = path.resolve(buildDir);
+
+    const readDirectory = (dir: string) => {
+      const fileNames = fs.readdirSync(dir);
+      fileNames.forEach((fileName) => {
+        const filePath = path.join(dir, fileName);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+          readDirectory(filePath);
+        } else {
+          const fileContent = fs.readFileSync(filePath, 'utf-8');
+          const relativePath = path.relative(buildDir, filePath);
+
+          files.push({
+            path: relativePath,
+            content: fileContent,
+          });
+        }
+      });
+    };
+
+    readDirectory(directoryPath);
+
+    return files;
+  }
+
 }
