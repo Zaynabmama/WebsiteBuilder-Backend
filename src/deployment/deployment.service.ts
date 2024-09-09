@@ -126,16 +126,16 @@ export class DeploymentService {
     const files = [];
     const directoryPath = path.resolve(buildDir);
 
-    const readDirectory = (dir: string) => {
-      const fileNames = fs.readdirSync(dir);
-      fileNames.forEach((fileName) => {
+    const readDirectory = async (dir: string) => {
+      const fileNames = await fs.promises.readdir(dir);
+      await Promise.all(fileNames.map(async (fileName) => {
         const filePath = path.join(dir, fileName);
-        const stat = fs.statSync(filePath);
+        const stat = await fs.promises.stat(filePath);
 
         if (stat.isDirectory()) {
-          readDirectory(filePath);
+          await readDirectory(filePath);
         } else {
-          const fileContent = fs.readFileSync(filePath, 'utf-8');
+          const fileContent = await fs.promises.readFile(filePath, 'utf-8');
           const relativePath = path.relative(buildDir, filePath);
 
           files.push({
@@ -143,10 +143,10 @@ export class DeploymentService {
             content: fileContent,
           });
         }
-      });
+      }));
     };
 
-    readDirectory(directoryPath);
+    await readDirectory(directoryPath);
 
     return files;
   }
