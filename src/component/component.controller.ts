@@ -19,16 +19,16 @@ export class ComponentController {
         const userId = req.user.userId;
         return this.componentService.addOrUpdateComponents(userId, projectId, pageId, components);
     }
-    // @Delete(':projectId/:pageId/components/:componentId')
-    // async deleteComponent(
-    //     @Req() req,
-    //     @Param('projectId') projectId: string,
-    //     @Param('pageId') pageId: string,
-    //     @Param('componentId') componentId: string,
-    // ): Promise<any> {
-    //     const userId = req.user.userId;
-    //     return this.componentService.deleteComponent(userId, projectId, pageId, componentId);
-    
+    @Delete(':projectId/:pageId/components/:componentId')
+    async deleteComponent(
+        @Req() req,
+        @Param('projectId') projectId: string,
+        @Param('pageId') pageId: string,
+        @Param('componentId') componentId: string,
+    ): Promise<any> {
+        const userId = req.user.userId;
+        return this.componentService.deleteComponent(userId, projectId, pageId, componentId);
+    }
     @Patch(':projectId/:pageId/components/:componentId')
     async updateComponent(
         @Req() req,
