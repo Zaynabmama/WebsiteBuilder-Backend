@@ -75,4 +75,24 @@ export class DeploymentService {
     await user.save();
   }
 
+  async buildReactProject(projectname: string): Promise<string> {
+    const projectPath = path.join(__dirname, `../../projects/${projectname}`);
+
+    return new Promise((resolve, reject) => {
+      exec(`npm run build`, { cwd: projectPath }, (error, stdout, stderr) => {
+        if (error) {
+          console.error('Error during React project build:', error.message);
+          reject(`Build failed: ${error.message}`);
+          return;
+        }
+
+        console.log('Build output:', stdout);
+        console.error('Build errors:', stderr);
+
+       
+        resolve(path.join(projectPath, 'build'));
+      });
+    });
+  }
+
 }
