@@ -48,9 +48,31 @@ export class DeploymentService {
   
       return siteId;
     } catch (error) {
-      console.error('Error creating site on Netlify:', error.response?.data || error.message);
       console.error('Full error details:', error.toJSON ? error.toJSON() : error);
       throw new InternalServerErrorException('Failed to create site on Netlify');
     }
   }
+
+  private async saveSiteIdToDeployment(
+    userId: string,
+    projectId: string,
+    siteId: string,
+    url: string,
+  ): Promise<void> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const project = user.projects.id(projectId);
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    
+    project.deployment = { siteId, status: 'created', url };
+
+    await user.save();
+  }
+
 }
