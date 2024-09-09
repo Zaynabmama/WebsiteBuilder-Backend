@@ -16,8 +16,7 @@ export class JSXGeneratorService {
     
     return `
       import React from 'react';
-      
-
+    
       const ${pageName} = () => (
         <div>
           ${componentBody}
