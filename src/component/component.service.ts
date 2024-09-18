@@ -34,9 +34,11 @@ constructor(
      pageId:string ,
      components: CreateComponentDto[],
      ): Promise<any> {
+      console.log('Received components:', components );
       const { user, page } = await this.findPage(userId, projectId, pageId);
       type ComponentWithOptionalId = CreateComponentDto & { _id?: Types.ObjectId };
       components.forEach((componentDto: ComponentWithOptionalId) => {
+        console.log('Component details:', componentDto);
         if (componentDto._id) {
           const existingComponent = page.components.id(componentDto._id);
       
