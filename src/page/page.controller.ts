@@ -41,20 +41,18 @@ export class PageController {
    }
    @Get(':pageId/preview')
    async previewPage(
-     @Req() req,  // To access the user details (assuming user info is available in the request)
+     @Req() req, 
      @Param('projectId') projectId: string,
      @Param('pageId') pageId: string
    ): Promise<{ previewUrl: string }> {
-     const userId = req.user.userId;  // Assuming JWT or session contains user information
+     const userId = req.user.userId; 
      if (!userId) {
        throw new NotFoundException('User not found');
      }
      
-     // Call the PageService to generate the preview URL
      return this.pageService.previewPage(userId, projectId, pageId);
    }
  
-   // Optional: Return the content of the page for dynamic loading
    @Get(':pageId/content')
    async getPageContent(
      @Req() req: any,
@@ -66,7 +64,6 @@ export class PageController {
        throw new NotFoundException('User not found');
      }
  
-     // Get the actual page content for rendering
      return this.pageService.getPageById(userId, projectId, pageId);
    }
 
