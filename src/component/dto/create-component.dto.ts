@@ -1,12 +1,15 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, ValidateNested } from 'class-validator';
+
+
 export class CreateComponentDto {
-@IsString()
-    readonly name: string;
+  @IsString()
+  readonly type: string;
 
-    @IsString()
-    readonly type: string;
 
-    @IsOptional()
-    readonly properties?: any;
+  @IsOptional()
+  
+  readonly properties: any;
 
-  }
+  
+}
+
