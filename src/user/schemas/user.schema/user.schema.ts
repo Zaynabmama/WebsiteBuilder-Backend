@@ -13,23 +13,16 @@ class Deployment {
     siteId: string;
 }
 
+
+
 @Schema({ timestamps: true })
 class Component {
     @Prop({ required: true })
     type: string;
 
-    @Prop({ type: Object })
-    properties: {
-        color?: string;
-        text?: string;         
-        backgroundColor?: string; 
-        flex?: string;           
-        fontSize?: string;       
-        placeholder?: string;    
-        type?: string;         
-        alignItems?: string;
-        justifyContent?: string;
-    };
+    @Prop({ type: Object, default: {} })
+    properties: any;
+
 }
 
 @Schema({ timestamps: true })
