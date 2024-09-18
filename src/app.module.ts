@@ -16,8 +16,7 @@ import { JSXGeneratorModule } from './jsxgenerate/jsxgenerate.module';
 import { DeploymentModule } from './deployment/deployment.module';
 import { PagegenerateModule } from './pagegenerate/pagegenerate.module';
 //import { ReactAppService } from './react-app/react-app.service';
-import { BuildService } from './build/build.service';
-import { BuildModule } from './build/build.module';
+
 
 
 @Module({
@@ -61,9 +60,8 @@ import { BuildModule } from './build/build.module';
      JSXGeneratorModule,
      DeploymentModule,
      PagegenerateModule,
-     BuildModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BuildService],
+  providers: [AppService],
 })
 export class AppModule {}
