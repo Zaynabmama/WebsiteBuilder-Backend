@@ -16,6 +16,7 @@ export class ComponentController {
         @Param('pageId') pageId: string,
         @Body() components: CreateComponentDto[],
     ): Promise<any> {
+        console.log('Received components:', components); 
         const userId = req.user.userId;
         return this.componentService.addOrUpdateComponents(userId, projectId, pageId, components);
     }
