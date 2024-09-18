@@ -22,14 +22,7 @@ export class AuthService {
       }
       throw new BadRequestException('Invalid credentials');
     }
-   
-    //   async login(user: any) {
-    //     const payload = { email: user.email, sub: user.userId ,role: user.role }; 
-    //     console.log('JWT Secret in AuthService:', this.jwtService['options']?.secret); 
-    //     return {
-    //       access_token: this.jwtService.sign(payload),
-    //     };
-    //   }
+
     async login(user: any) {
         const payload = { email: user.email, sub: user._id, role: user.role,name:user.name };
         console.log('JWT Payload:', payload);
