@@ -19,10 +19,14 @@ export class ProjectController {
     const userId = req.user.userId;
     return this.projectService.listProjects(userId);
   }
+  @Get('all')
+  async listallProjects() {
+    return this.projectService.listAllProjects(); 
+  }
 
   @Get(':projectId')
   async getProjectById(@Req() req, @Param('projectId') projectId: string) {
-    const userId = req.user.userId;  //extract userId from auth request
+    const userId = req.user.userId; 
     return this.projectService.getProjectById(userId, projectId);
   }
   @Get(':projectName')
@@ -34,7 +38,7 @@ export class ProjectController {
   @Delete(':projectId')
   @HttpCode(HttpStatus.NO_CONTENT) // 204
   async deleteProjectById(@Req() req, @Param('projectId') projectId: string): Promise<void> {
-    const userId = req.user.userId; // Extract the authenticated user's ID
+    const userId = req.user.userId; 
     await this.projectService.deleteProjectById(userId, projectId);
   }
 }
