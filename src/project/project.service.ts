@@ -54,6 +54,17 @@ export class ProjectService {
     }
     return user.projects;
   }
+
+    async listAllProjects(): Promise<any[]> {
+      const users = await this.userModel.find().populate('projects'); 
+      const allProjects = users.flatMap(user => 
+        user.projects.map(project => ({
+          ...project.toObject(),
+          createdBy: user.name 
+        }))
+      );
+      return allProjects;
+    }
   async getProject(userId: string, projectName: string): Promise<any> {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException('User not found');
@@ -78,24 +89,39 @@ export class ProjectService {
     
   }
 
-  async deleteProjectById(userId: string, projectId: string): Promise<any> {
+  async deleteProjectById(userId: string, projectId: string): Promise<void> {
+    console.log(`User ID: ${userId}`);
+    console.log(`Attempting to delete Project ID: ${projectId}`);
+  
     const user = await this.userModel.findById(userId).exec();
+    console.log(`Fetched User: ${JSON.stringify(user)}`);
   
     if (!user) {
       throw new NotFoundException('User not found');
     }
   
+    if (user.role === 'admin') {
+ 
+      const projectFound = await this.userModel.updateMany(
+        { 'projects._id': projectId },
+        { $pull: { projects: { _id: projectId } } }
+      );
+      console.log('Project deleted successfully for admin.');
+      return;
+    }
+
     const project = user.projects.id(projectId);
   
     if (!project) {
+      console.log('Project not found in user projects');
       throw new NotFoundException('Project not found');
     }
   
     user.projects.pull(projectId);
-    
     await user.save();
-  
+    console.log('Project deleted successfully ');
   }
+  
   
 
 
