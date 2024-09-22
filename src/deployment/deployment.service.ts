@@ -22,27 +22,26 @@ export class DeploymentService {
 
   async oneClickDeploy(userId: string, projectname: string, projectId: string): Promise<string> {
     try {
-    
-      const buildDir = await this.buildReactProject(projectname);
 
-      
+      const buildDir = await this.buildReactProject(projectname);
+  
+
       let siteId = await this.getExistingSiteId(userId, projectId);
       if (!siteId) {
         siteId = await this.createSiteForUser(userId, projectId);
       }
 
       const liveUrl = await this.deployToNetlify(siteId, buildDir);
-
-      console.log(`Deployment successful: ${liveUrl}`);
-
+  
       await this.updateDeploymentStatus(userId, projectId, 'deployed', liveUrl);
-
+  
       return liveUrl;
     } catch (error) {
       console.error('One-click deployment failed:', error.message);
       throw new InternalServerErrorException('Deployment failed');
     }
   }
+  
 
   async createSiteForUser(userId: string, projectId: string): Promise<string> {
     const apiUrl = this.configService.get<string>('NETLIFY_API_URL');
