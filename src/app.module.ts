@@ -17,6 +17,8 @@ import { DeploymentModule } from './deployment/deployment.module';
 import { PagegenerateModule } from './pagegenerate/pagegenerate.module';
 //import { ReactAppService } from './react-app/react-app.service';
 
+import { NetlifyDeployModule } from './deploy/deploy.module';
+
 
 
 @Module({
@@ -60,6 +62,7 @@ import { PagegenerateModule } from './pagegenerate/pagegenerate.module';
      JSXGeneratorModule,
      DeploymentModule,
      PagegenerateModule,
+     NetlifyDeployModule,
   ],
   controllers: [AppController],
   providers: [AppService],
