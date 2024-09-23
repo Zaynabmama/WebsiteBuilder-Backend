@@ -1,16 +1,19 @@
-import { Controller, Post, Param, Body, Req } from '@nestjs/common';
+import { Controller, Post, Param, Body, Req, UseGuards } from '@nestjs/common';
 import { NetlifyDeployService } from './deploy.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('deploy')
 export class NetlifyDeployController {
   constructor(private readonly netlifyDeployService: NetlifyDeployService) {}
 
-  @Post(':userId/:projectName')
+  @Post(':projectName')
   async deploy(
     @Req() req,
     @Param('projectName') projectName: string,
   ): Promise<any> {
+    console.log('Received project name:', projectName);
+ 
     try {
       const userId = req.user.userId;
       const deploymentResult = await this.netlifyDeployService.deployProject(userId, projectName);
