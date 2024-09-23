@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body } from '@nestjs/common';
+import { Controller, Post, Param, Body, Req } from '@nestjs/common';
 import { NetlifyDeployService } from './deploy.service';
 
 
@@ -8,10 +8,11 @@ export class NetlifyDeployController {
 
   @Post(':userId/:projectName')
   async deploy(
-    @Param('userId') userId: string,
+    @Req() req,
     @Param('projectName') projectName: string,
   ): Promise<any> {
     try {
+      const userId = req.user.userId;
       const deploymentResult = await this.netlifyDeployService.deployProject(userId, projectName);
       return {
         message: 'Deployment successful',
