@@ -19,7 +19,8 @@ export class NetlifyDeployService {
   async deployProject(userId: string, projectName: string): Promise<any> {
     const netlifyToken = this.configService.get<string>('NETLIFY_API_TOKEN');
     const projectsDir = path.join(__dirname, `../../projects/${projectName}`);
-
+   
+  console.log('Project directory path:', projectsDir);
 
     if (!fs.existsSync(projectsDir)) {
       throw new Error(`Project directory ${projectsDir} does not exist`);
@@ -28,9 +29,10 @@ export class NetlifyDeployService {
  
     await this.buildReactProject(projectName);
 
-  
+    const user = await this.userModel.findById(userId);
+    const project = user.projects.find(p => p.name === projectName);
     const deployResponse = await this.deployToNetlify(projectsDir, projectName, netlifyToken);
-    await this.updateDeploymentStatus(userId, projectName, 'success', deployResponse.deploy_ssl_url);
+    await this.updateDeploymentStatus(userId, project._id.toString(), 'deployed', deployResponse.deploy_ssl_url);
     return deployResponse;
   }
 
@@ -68,19 +70,10 @@ export class NetlifyDeployService {
     await this.zipBuildDirectory(buildDir, zipFilePath);
 
 
-    const createSiteResponse = await axios.post(
-      'https://api.netlify.com/api/v1/sites',
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${netlifyToken}`,
-        },
-      },
-    );
 
-    const siteId = createSiteResponse.data.site_id;
+    const siteId = this.configService.get<string>('NETLIFY_TEMPLATE_SITE_ID');
 
-    // Step 3: Deploy the zip file to Netlify
+    
     const deployResponse = await axios.post(
       `https://api.netlify.com/api/v1/sites/${siteId}/deploys`,
       fs.createReadStream(zipFilePath),
@@ -122,10 +115,19 @@ export class NetlifyDeployService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    console.log('User found:', user);
 
     const project = user.projects.id(projectId);
     if (!project) {
+      console.error('Project ID:', projectId);
+      console.log('User projects:', user.projects);
       throw new NotFoundException('Project not found');
+    }
+    if (!project.deployment) {
+      project.deployment = {
+        status: '',
+      }
+      console.log('Initialized deployment object for project');
     }
 
     project.deployment.status = status;
