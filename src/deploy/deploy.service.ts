@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { exec } from 'child_process';
 import * as fs from 'fs-extra';
@@ -30,7 +30,7 @@ export class NetlifyDeployService {
 
   
     const deployResponse = await this.deployToNetlify(projectsDir, projectName, netlifyToken);
-
+    await this.updateDeploymentStatus(userId, projectName, 'success', deployResponse.deploy_ssl_url);
     return deployResponse;
   }
 
@@ -116,5 +116,23 @@ export class NetlifyDeployService {
       archive.directory(buildDir, false);
       archive.finalize();
     });
+  }
+  private async updateDeploymentStatus(userId: string, projectId: string, status: string, liveUrl?: string): Promise<void> {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const project = user.projects.id(projectId);
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    project.deployment.status = status;
+    if (liveUrl) {
+      project.deployment.url = liveUrl;
+    }
+
+    await user.save();
   }
 }

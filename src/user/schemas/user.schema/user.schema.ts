@@ -5,12 +5,9 @@ import { Document, Types } from "mongoose";
 class Deployment {
     @Prop({ required: true })
     status: string;
+    @Prop()
+    url?: string;
 
-    @Prop({ required: true })
-    url: string;
-
-    @Prop({ required: true })
-    siteId: string;
 }
 
 
