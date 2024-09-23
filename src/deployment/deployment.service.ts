@@ -88,7 +88,7 @@ export class DeploymentService {
       throw new NotFoundException('Project not found');
     }
 
-    project.deployment = { siteId, status: 'created', url };
+    // project.deployment = { siteId, status: 'created', url };
     await user.save();
   }
 
@@ -255,9 +255,9 @@ export class DeploymentService {
       throw new NotFoundException('Project not found');
     }
 
-    if (project.deployment && project.deployment.siteId) {
-      return project.deployment.siteId;
-    }
+    // if (project.deployment && project.deployment.siteId) {
+    //   return project.deployment.siteId;
+    // }
 
     return null; 
   }
