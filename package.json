@@ -29,6 +29,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.1",
     "@nestjs/serve-static": "^4.0.2",
+    "@nestjs/swagger": "^7.4.2",
     "axios": "^1.7.5",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -41,7 +42,8 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
