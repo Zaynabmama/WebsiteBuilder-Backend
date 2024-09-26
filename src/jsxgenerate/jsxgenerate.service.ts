@@ -108,11 +108,7 @@ export class JSXGeneratorService {
             .map(
               (member: any) => `
               <div style={${JSON.stringify(styles.teamMember)}}>
-                <img 
-                  src="${member.photoUrl}" 
-                  alt="${member.name}" 
-                  style={${JSON.stringify(styles.teamMemberPhoto)}} 
-                />
+               
                 <h3 style={${JSON.stringify(styles.teamMemberName)}}>${member.name}</h3>
                 <p style={${JSON.stringify(styles.teamMemberPosition)}}>${member.position}</p>
                 <p style={${JSON.stringify(styles.teamMemberDescription)}}>${member.description}</p>
